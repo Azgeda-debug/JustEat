@@ -88,31 +88,31 @@
                 </div>
               </q-item-section>
             </q-item>
+            <div class="q-pa-xs fixed-bottom-right bg-white history-date">
+              {{ new Date().toLocaleDateString() }}
+            </div>
           </q-list>
         </q-scroll-area>
       </div>
     </q-dialog>
-<!-- 
+
     <q-dialog v-model="showHistoryTotal">
       <div
-        v-if="currentDayStore.macronutrientsHistory"
+        v-if="currentDayStore.macronutrientsHistoryTotal"
         class="bg-white q-pa-sm"
         style="width: 70vw; height: 60vh"
       >
         <q-scroll-area style="width: 100%; height: 100%">
           <q-list separator>
             <q-item
-              v-for="(product, key) in currentDayStore.macronutrientsHistory"
+              v-for="(
+                product, key
+              ) in currentDayStore.macronutrientsHistoryTotal"
               :key="key"
               class="q-py-sm row"
             >
               <q-item-section>
-                <q-item-label class="text-bold">{{
-                  product.name
-                }}</q-item-label>
-                <q-item-label>
-                  Product Quantity: {{ product.quantity }}g
-                </q-item-label>
+                <q-item-label class="text-h6">{{ key }}</q-item-label>
                 <q-item-label caption>
                   Proteins: {{ product.proteins }}g Carbohydrates:
                   {{ product.carbohydrates }}g Fats: {{ product.fats }}g
@@ -125,7 +125,7 @@
           </q-list>
         </q-scroll-area>
       </div>
-    </q-dialog> -->
+    </q-dialog>
 
     <transition
       appear
@@ -174,12 +174,14 @@ const deleteProductFromToday = (id) => {
 </script>
 
 <style lang="scss">
-.today-header {
+.today-header,
+.history-date {
   z-index: 2;
 }
 
 .today-list {
   margin-top: 60px;
+  margin-bottom: 15px;
 
   @media (max-width: $breakpoint-xs-max) {
     margin-top: 70px;
