@@ -2,10 +2,13 @@
   <router-view />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { onMounted } from 'vue'
+import { useCurrentDayStore } from './stores/currentDayStore';
 
-export default defineComponent({
-  name: 'App'
+const currentDayStore = useCurrentDayStore()
+
+onMounted(() => {
+  currentDayStore.firebaseGetProducts()
 })
 </script>

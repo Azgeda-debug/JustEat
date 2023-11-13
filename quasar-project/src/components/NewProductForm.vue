@@ -18,7 +18,7 @@
       rounded
       v-model.number="newProduct.calories"
       type="number"
-      placeholder="Calories per 1g of Product"
+      placeholder="Calories per 100g of Product"
       dense
     />
 
@@ -28,7 +28,7 @@
       dense
       v-model.number="newProduct.proteins"
       type="number"
-      placeholder="Protein per 1g of Product"
+      placeholder="Protein per 100g of Product"
     />
 
     <q-input
@@ -36,7 +36,7 @@
       rounded
       v-model.number="newProduct.fats"
       type="number"
-      placeholder="Fat per 1g of Product"
+      placeholder="Fat per 100g of Product"
       dense
     />
 
@@ -45,7 +45,7 @@
       rounded
       v-model.number="newProduct.carbohydrates"
       type="number"
-      placeholder="Carbohydrates per 1g of Product"
+      placeholder="Carbohydrates per 100g of Product"
       dense
     />
     <q-separator />

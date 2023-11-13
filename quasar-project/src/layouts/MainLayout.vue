@@ -8,16 +8,16 @@
 
     <q-footer
       bordered
-      class="q-py-xs bg-primary flex justify-evenly text-center text-white"
+      class="q-py-xs bg-primary text-white text-center row"
     >
-      <span class="text-h5"
+      <span class="text-h5 col-6"
         >Kcal: {{ macronutrients.calories || 0 }} / 2800
       </span>
-      <span class="text-h5">P: {{ macronutrients.proteins || 0 }} / 240 </span>
-      <span class="text-h5">
-        C: {{ macronutrients.carbohydrates || 0 }} / 320
+      <span class="text-h5 col-6">P: {{ macronutrients.proteins || 0 }}g / 240g </span>
+      <span class="text-h5 col-6">
+        C: {{ macronutrients.carbohydrates || 0 }}g / 320g
       </span>
-      <span class="text-h5"> F: {{ macronutrients.fats || 0 }} / 60</span>
+      <span class="text-h5 col-6"> F: {{ macronutrients.fats || 0 }}g / 60g</span>
     </q-footer>
 
     <q-page-container>
@@ -37,3 +37,4 @@ currentDayStore.$subscribe((mutation, state) => {
   macronutrients.value = currentDayStore.macronutrients;
 });
 </script>
+<!-- flex justify-evenly text-center -->
