@@ -1,6 +1,8 @@
 <template>
   <div>
     <q-scroll-area
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
       class="q-pa-md"
       :style="
         !props.showProductForm
@@ -17,7 +19,9 @@
         <q-separator />
 
         <q-item
-          v-for="(product, key) in products"
+          v-for="(product, key) in searchProductContent
+            ? filteredProducts
+            : products"
           :key="key"
           @click="showProduct(product)"
           clickable
@@ -70,10 +74,13 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref } from "vue";
+import { defineProps, onMounted, ref, watch } from "vue";
 import { useProductStore } from "src/stores/productStore";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useQuasar } from "quasar";
+import { customScrollBar } from "src/composables/ScrollBar.js";
+
+const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const $q = useQuasar();
 
@@ -85,8 +92,26 @@ const productsStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 
 const products = ref({});
+const searchProductContent = ref("");
 productsStore.$subscribe((mutation, state) => {
   products.value = productsStore.products;
+  searchProductContent.value = productsStore.searchProductContent;
+});
+
+const filteredProducts = ref({});
+watch(searchProductContent, (newVal) => {
+  if (newVal) {
+    filteredProducts.value = {};
+    Object.keys(products.value).forEach((key) => {
+      if (
+        products.value[key].name
+          .toLowerCase()
+          .includes(newVal.toLowerCase().trim())
+      ) {
+        filteredProducts.value[key] = products.value[key];
+      }
+    });
+  }
 });
 
 const showProduct = (product) => {

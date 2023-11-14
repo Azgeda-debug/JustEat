@@ -7,6 +7,7 @@ import { ref as dbRef, set, onChildAdded, onChildChanged, remove } from "firebas
 export const useProductStore = defineStore('productStore', () => {
 
   const products = vueRef({})
+  const searchProductContent = vueRef()
 
   const firebaseAddNewProduct = (payLoad) => {
     if (payLoad.name.trim()) {
@@ -38,6 +39,7 @@ export const useProductStore = defineStore('productStore', () => {
 
   return {
     products,
+    searchProductContent,
     firebaseAddNewProduct,
     firebaseGetProducts,
     firebaseDeleteProduct,

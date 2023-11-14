@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref as vueRef } from 'vue'
 import { uid } from 'quasar'
 import { db } from 'src/boot/firebase'
-import { ref as dbRef, set, get, onChildAdded, onChildChanged, remove } from "firebase/database";
+import { ref as dbRef, set, get, onChildAdded, onChildChanged, remove, update } from "firebase/database";
 
 export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
@@ -101,6 +101,30 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         })
     }
 
+    const firebaseDeleteProductFromHistory = (payLoad) => {
+        const day = getDay()
+
+        const roundToTwoDecimalPlaces = (value) => {
+            return parseFloat(value.toFixed(2))
+        }
+
+        get(dbRef(db, `dailies/${day}/history/${payLoad}`)).then(snapshot => {
+            macronutrients.value.calories -= snapshot.val().calories
+            macronutrients.value.proteins -= snapshot.val().proteins
+            macronutrients.value.fats -= snapshot.val().fats
+            macronutrients.value.carbohydrates -= snapshot.val().carbohydrates
+
+            macronutrients.value.proteins = roundToTwoDecimalPlaces(macronutrients.value.proteins)
+            macronutrients.value.fats = roundToTwoDecimalPlaces(macronutrients.value.fats)
+            macronutrients.value.carbohydrates = roundToTwoDecimalPlaces(macronutrients.value.carbohydrates)
+            macronutrients.value.calories = roundToTwoDecimalPlaces(macronutrients.value.calories)
+
+            update(dbRef(db, `dailies/${day}/total`), macronutrients.value)
+        })
+
+        remove(dbRef(db, `dailies/${day}/history/${payLoad}`))
+    }
+
     return {
         macronutrients,
         macronutrientsHistory,
@@ -109,5 +133,6 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         resetDay,
         firebaseCheckHistoryTotal,
         firebaseGetProducts,
+        firebaseDeleteProductFromHistory,
     }
 });

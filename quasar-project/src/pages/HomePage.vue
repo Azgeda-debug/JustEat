@@ -40,14 +40,16 @@
 
     <q-dialog v-model="showHistoryToday">
       <div
-        v-if="currentDayStore.macronutrientsHistory"
+        v-if="macronutrientsHistory"
         class="bg-white q-pa-sm"
         style="width: 70vw; height: 60vh"
       >
-        <q-scroll-area style="width: 100%; height: 100%">
-          <div
-            class="text-center text-h6 fixed bg-white full-width today-header"
-          >
+        <q-scroll-area
+          :thumb-style="thumbStyle"
+          :bar-style="barStyle"
+          style="width: 100%; height: 100%"
+        >
+          <div class="q-mx-sm text-center text-h6 fixed bg-white today-header">
             Kcal: {{ totalToday.calories || 0 }} Proteins:
             {{ totalToday.proteins || 0 }}g Carbohydrates:
             {{ totalToday.carbohydrates || 0 }}g Fats:
@@ -56,11 +58,13 @@
           <q-separator />
           <q-list separator class="today-list">
             <q-item
-              v-for="(product, key) in currentDayStore.macronutrientsHistory"
+              v-for="(product, key) in macronutrientsHistory"
               :key="key"
               class="q-py-sm row justify-between items-end"
             >
-              <q-item-section>
+              <q-item-section
+                :class="$q.screen.width < 600 ? 'full-width' : ''"
+              >
                 <q-item-label class="text-bold">{{
                   product.name
                 }}</q-item-label>
@@ -71,11 +75,20 @@
                   Proteins: {{ product.proteins }}g Carbohydrates:
                   {{ product.carbohydrates }}g Fats: {{ product.fats }}g
                 </q-item-label>
-                <q-item-label class="text-bold"
-                  >Kcal: {{ product.calories }}</q-item-label
-                >
+                <q-item-label class="text-bold row justify-between items-center"
+                  ><span class="">Kcal: {{ product.calories }}</span>
+
+                  <q-btn
+                    @click="deleteProductFromToday(key)"
+                    size="12px"
+                    flat
+                    round
+                    icon="delete"
+                    title="delete"
+                    class="text-grey-8 lt-sm"
+                /></q-item-label>
               </q-item-section>
-              <q-item-section side>
+              <q-item-section side class="gt-xs">
                 <div class="text-grey-8">
                   <q-btn
                     @click="deleteProductFromToday(key)"
@@ -102,7 +115,11 @@
         class="bg-white q-pa-sm"
         style="width: 70vw; height: 60vh"
       >
-        <q-scroll-area style="width: 100%; height: 100%">
+        <q-scroll-area
+          :thumb-style="thumbStyle"
+          :bar-style="barStyle"
+          style="width: 100%; height: 100%"
+        >
           <q-list separator>
             <q-item
               v-for="(
@@ -141,14 +158,23 @@
 
 <script setup>
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 import NewProductForm from "src/components/NewProductForm";
 import CurrentProducts from "src/components/CurrentProducts";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
+import { customScrollBar } from "src/composables/ScrollBar.js";
+
+const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
+
+const $q = useQuasar();
 
 const currentDayStore = useCurrentDayStore();
+
 const totalToday = ref({});
+const macronutrientsHistory = ref({});
 currentDayStore.$subscribe((mutation, state) => {
   totalToday.value = currentDayStore.macronutrients;
+  macronutrientsHistory.value = currentDayStore.macronutrientsHistory;
 });
 
 const showProductForm = ref(false);
@@ -169,7 +195,8 @@ const checkCurrentDay = () => {
 };
 
 const deleteProductFromToday = (id) => {
-  console.log(id);
+  delete macronutrientsHistory.value[id];
+  currentDayStore.firebaseDeleteProductFromHistory(id);
 };
 </script>
 
@@ -179,12 +206,25 @@ const deleteProductFromToday = (id) => {
   z-index: 2;
 }
 
+.history-date {
+  right: 20px;
+}
+
 .today-list {
   margin-top: 60px;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 
   @media (max-width: $breakpoint-xs-max) {
     margin-top: 70px;
   }
+
+  @media screen and (max-width: 500px) {
+    margin-top: 90px;
+  }
+}
+
+.q-scrollarea__thumb,
+.q-scrollarea__bar {
+  z-index: 2;
 }
 </style>
