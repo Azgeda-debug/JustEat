@@ -12,25 +12,33 @@
           label="Options"
         >
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              @click="showProductForm = !showProductForm"
+            >
               <q-item-section>
                 <q-item-label>Add a New Product</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable v-close-popup @click="currentDayStore.resetDay()">
               <q-item-section>
                 <q-item-label>Reset Day</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              @click="currentDayStore.showHistoryToday = true"
+            >
               <q-item-section>
                 <q-item-label>Check Current Day</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable v-close-popup @click="checkHistory">
               <q-item-section>
                 <q-item-label>Check History</q-item-label>
               </q-item-section>
@@ -72,7 +80,7 @@
     </q-footer>
 
     <q-page-container>
-      <router-view />
+      <router-view :showProductForm="showProductForm" />
     </q-page-container>
   </q-layout>
 </template>
@@ -93,6 +101,13 @@ currentDayStore.$subscribe((mutation, state) => {
 const searchProductContent = ref("");
 const searchProduct = () => {
   productStore.searchProductContent = searchProductContent.value;
+};
+
+const showProductForm = ref(false);
+
+const checkHistory = () => {
+  currentDayStore.showHistoryTotal = true;
+  currentDayStore.firebaseCheckHistoryTotal();
 };
 </script>
 

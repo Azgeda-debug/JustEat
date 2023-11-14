@@ -16,6 +16,9 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
     const macronutrientsHistory = vueRef({})
     const macronutrientsHistoryTotal = vueRef({})
 
+    const showHistoryToday = vueRef(false)
+    const showHistoryTotal = vueRef(false)
+
     const getDay = () => {
         let d = new Date()
         return d.toLocaleDateString().replace(/\./g, '-')
@@ -129,6 +132,8 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         macronutrients,
         macronutrientsHistory,
         macronutrientsHistoryTotal,
+        showHistoryToday,
+        showHistoryTotal,
         addProductToFirebase,
         resetDay,
         firebaseCheckHistoryTotal,

@@ -4,10 +4,11 @@
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       class="q-pa-md"
+      :class="  !props.showProductForm ? 'q-mt-md' : ''"
       :style="
         !props.showProductForm
-          ? 'height: 75vh; max-width: 100%'
-          : 'height: 48vh; max-width: 100%'
+          ? 'height: 85vh; max-width: 100%'
+          : 'height: 55vh; max-width: 100%'
       "
     >
       <q-list bordered separator>
@@ -80,6 +81,7 @@ import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useQuasar } from "quasar";
 import { customScrollBar } from "src/composables/ScrollBar.js";
 
+// Scroll Bar Styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const $q = useQuasar();
@@ -91,6 +93,7 @@ const props = defineProps({
 const productsStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 
+// Holds the product data obtained from the store
 const products = ref({});
 const searchProductContent = ref("");
 productsStore.$subscribe((mutation, state) => {
@@ -98,6 +101,7 @@ productsStore.$subscribe((mutation, state) => {
   searchProductContent.value = productsStore.searchProductContent;
 });
 
+// Observing the input search and filtering the products
 const filteredProducts = ref({});
 watch(searchProductContent, (newVal) => {
   if (newVal) {
@@ -114,6 +118,7 @@ watch(searchProductContent, (newVal) => {
   }
 });
 
+//  Show information about the product (more useful for the mobile version)
 const showProduct = (product) => {
   $q.dialog({
     dark: true,
@@ -127,6 +132,7 @@ const showProduct = (product) => {
   });
 };
 
+// Add the product to the database
 const addProduct = (id) => {
   $q.dialog({
     dark: true,
@@ -149,6 +155,7 @@ const addProduct = (id) => {
   });
 };
 
+// Delete the product from the database
 const deleteProduct = (id) => {
   $q.dialog({
     dark: true,

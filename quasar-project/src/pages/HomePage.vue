@@ -1,44 +1,8 @@
 <template>
   <q-page class="q-pa-sm overflow-hidden">
-    <div class="q-gutter-md text-center">
-      <q-btn
-        @click="showProductForm = !showProductForm"
-        unelevated
-        rounded
-        :color="showProductForm ? 'red-13' : 'primary'"
-        no-caps
-        :label="showProductForm ? 'Close' : 'Add a new product'"
-      />
+    <div class="q-gutter-md text-center"></div>
 
-      <q-btn
-        @click="resetDay"
-        unelevated
-        rounded
-        color="primary"
-        no-caps
-        label="Reset day"
-      />
-
-      <q-btn
-        @click="checkCurrentDay"
-        unelevated
-        rounded
-        color="primary"
-        no-caps
-        label="Check current day"
-      />
-
-      <q-btn
-        @click="checkHistory"
-        unelevated
-        rounded
-        color="primary"
-        no-caps
-        label="Check history"
-      />
-    </div>
-
-    <q-dialog v-model="showHistoryToday">
+    <q-dialog v-model="currentDayStore.showHistoryToday">
       <div
         v-if="macronutrientsHistory"
         class="bg-white q-pa-sm"
@@ -109,7 +73,7 @@
       </div>
     </q-dialog>
 
-    <q-dialog v-model="showHistoryTotal">
+    <q-dialog v-model="currentDayStore.showHistoryTotal">
       <div
         v-if="currentDayStore.macronutrientsHistoryTotal"
         class="bg-white q-pa-sm"
@@ -149,27 +113,33 @@
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
-      <NewProductForm v-show="showProductForm" />
+      <NewProductForm v-show="props.showProductForm" />
     </transition>
 
-    <CurrentProducts :showProductForm="showProductForm" />
+    <CurrentProducts :showProductForm="props.showProductForm" />
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
 import { useQuasar } from "quasar";
 import NewProductForm from "src/components/NewProductForm";
 import CurrentProducts from "src/components/CurrentProducts";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { customScrollBar } from "src/composables/ScrollBar.js";
 
+// Scroll Bar Styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
+
+const props = defineProps({
+  showProductForm: Boolean,
+});
 
 const $q = useQuasar();
 
 const currentDayStore = useCurrentDayStore();
 
+// Holds today's product data obtained from the store
 const totalToday = ref({});
 const macronutrientsHistory = ref({});
 currentDayStore.$subscribe((mutation, state) => {
@@ -177,23 +147,7 @@ currentDayStore.$subscribe((mutation, state) => {
   macronutrientsHistory.value = currentDayStore.macronutrientsHistory;
 });
 
-const showProductForm = ref(false);
-
-const resetDay = () => {
-  currentDayStore.resetDay();
-};
-
-const showHistoryTotal = ref(false);
-const checkHistory = () => {
-  showHistoryTotal.value = true;
-  currentDayStore.firebaseCheckHistoryTotal();
-};
-
-const showHistoryToday = ref(false);
-const checkCurrentDay = () => {
-  showHistoryToday.value = true;
-};
-
+// Removes the product from today's history and Firebase
 const deleteProductFromToday = (id) => {
   delete macronutrientsHistory.value[id];
   currentDayStore.firebaseDeleteProductFromHistory(id);
