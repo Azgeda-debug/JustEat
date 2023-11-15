@@ -6,6 +6,7 @@
     >
       <q-toolbar>
         <q-btn-dropdown
+          v-if="!route.path.includes('/auth')"
           flat
           dense
           class="absolute-left text-white"
@@ -43,14 +44,25 @@
                 <q-item-label>Check History</q-item-label>
               </q-item-section>
             </q-item>
+
+            <q-item
+              clickable
+              v-close-popup
+              @click="usersStore.firebaseLogoutUser"
+            >
+              <q-item-section>
+                <q-item-label>Logout</q-item-label>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-btn-dropdown>
 
         <q-toolbar-title class="absolute-center gt-xs">
-          Just Eat
+          {{ pageTitle }}
         </q-toolbar-title>
 
         <q-input
+          v-if="!route.path.includes('/auth')"
           @keyup="searchProduct"
           class="header-search"
           bg-color="white"
@@ -64,7 +76,11 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer bordered class="q-py-xs bg-primary text-white text-center row">
+    <q-footer
+      v-if="!route.path.includes('/auth')"
+      bordered
+      class="q-py-xs bg-primary text-white text-center row"
+    >
       <span class="text-h6 col-6"
         >Kcal: {{ macronutrients.calories || 0 }} / 2800
       </span>
@@ -86,16 +102,33 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useProductStore } from "src/stores/productStore";
+import { useUsersStore } from "src/stores/usersStore";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
+const usersStore = useUsersStore();
 
 const macronutrients = ref({});
 currentDayStore.$subscribe((mutation, state) => {
   macronutrients.value = currentDayStore.macronutrients;
+});
+
+const userDetails = computed(() => {
+  return usersStore.userDetails;
+});
+
+const pageTitle = computed(() => {
+  if (userDetails.value.id) {
+    return userDetails.value.name;
+  } else {
+    return "JustEat";
+  }
 });
 
 const searchProductContent = ref("");

@@ -121,12 +121,14 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import NewProductForm from "src/components/NewProductForm";
 import CurrentProducts from "src/components/CurrentProducts";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
+import { useUsersStore } from "src/stores/usersStore";
 import { customScrollBar } from "src/composables/ScrollBar.js";
+import { useRouter } from "vue-router";
 
 // Scroll Bar Styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
@@ -135,8 +137,11 @@ const props = defineProps({
   showProductForm: Boolean,
 });
 
+const router = useRouter();
+
 const $q = useQuasar();
 
+const usersStore = useUsersStore();
 const currentDayStore = useCurrentDayStore();
 
 // Holds today's product data obtained from the store
@@ -152,6 +157,12 @@ const deleteProductFromToday = (id) => {
   delete macronutrientsHistory.value[id];
   currentDayStore.firebaseDeleteProductFromHistory(id);
 };
+
+onMounted(() => {
+  if (!usersStore.userDetails.id) {
+    router.push("/auth");
+  }
+});
 </script>
 
 <style lang="scss">

@@ -1,5 +1,6 @@
 import MainLayout from 'layouts/MainLayout.vue'
 import HomePage from 'pages/HomePage.vue'
+import AuthPage from 'pages/AuthPage.vue'
 import ErrorNotFound from 'pages/ErrorNotFound.vue'
 
 const routes = [
@@ -9,9 +10,14 @@ const routes = [
     children:
       [
         {
-          path: '',
+          path: ':userId',
           component: HomePage,
           name: 'HomePage',
+        },
+        {
+          path: '/auth',
+          component: AuthPage,
+          name: 'AuthPage',
         }
       ]
   },
