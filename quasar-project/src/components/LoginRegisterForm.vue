@@ -10,7 +10,11 @@
       label="Name *"
       type="text"
       :rules="[(val) => (val && val.length > 0) || 'Please type your name']"
-    />
+    >
+      <template v-slot:prepend>
+        <q-icon name="person" />
+      </template>
+    </q-input>
 
     <q-input
       outlined
@@ -21,7 +25,11 @@
       type="email"
       label="Email *"
       :rules="[(val) => (val && val.length > 0) || 'Please type your email']"
-    />
+    >
+      <template v-slot:prepend>
+        <q-icon name="email" />
+      </template>
+    </q-input>
 
     <q-input
       outlined
@@ -32,7 +40,11 @@
       type="password"
       label="Password *"
       :rules="[(val) => (val && val.length > 0) || 'Please type your password']"
-    />
+    >
+      <template v-slot:prepend>
+        <q-icon name="lock" />
+      </template>
+    </q-input>
 
     <div class="text-center">
       <q-btn
