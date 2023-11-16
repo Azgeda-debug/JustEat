@@ -66,14 +66,11 @@ onMounted(() => {
   margin-left: auto;
   margin-right: auto;
   max-width: 40%;
-  background: yellow;
   @media (max-width: $breakpoint-sm-max) {
     max-width: 70%;
-    background: red;
   }
   @media (max-width: $breakpoint-xs-max) {
     max-width: 90%;
-    background: green;
   }
 }
 </style>
