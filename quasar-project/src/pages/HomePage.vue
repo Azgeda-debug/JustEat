@@ -84,7 +84,12 @@
           :bar-style="barStyle"
           style="width: 100%; height: 100%"
         >
-          <q-list separator>
+          <q-list
+            v-if="
+              Object.keys(currentDayStore.macronutrientsHistoryTotal).length
+            "
+            separator
+          >
             <q-item
               v-for="(
                 product, key
@@ -104,6 +109,12 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <div v-else class="text-center">
+            <span class="text-h6 text-bold"
+              >Your history is empty. Add any product to start recording your
+              history.</span
+            >
+          </div>
         </q-scroll-area>
       </div>
     </q-dialog>
@@ -162,6 +173,7 @@ onMounted(() => {
   if (!usersStore.userDetails.id) {
     router.push("/auth");
   }
+  currentDayStore.firebaseGetProducts();
 });
 </script>
 

@@ -40,7 +40,7 @@ export const useUsersStore = defineStore('usersStore', () => {
                         id: id
                     }
 
-                    router.push('/')
+                    router.push(`/${id}`)
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -67,6 +67,12 @@ export const useUsersStore = defineStore('usersStore', () => {
                         })
                     }
                 });
+        } else {
+            $q.notify({
+                type: 'negative',
+                iconL: "warning",
+                message: 'Fill in all fields.'
+            })
         }
     }
     const firebaseLoginUser = (payLoad) => {
@@ -75,7 +81,13 @@ export const useUsersStore = defineStore('usersStore', () => {
                 .then((response) => { })
                 .catch((error) => {
                     const errorCode = error.code
-
+                    if (errorCode == 'invalid-email') {
+                        $q.notify({
+                            type: 'negative',
+                            iconL: "warning",
+                            message: 'Invalid email.'
+                        })
+                    }
                     if (errorCode == 'auth/invalid-login-credentials') {
                         $q.notify({
                             type: 'negative',
@@ -97,13 +109,13 @@ export const useUsersStore = defineStore('usersStore', () => {
                 const id = user.uid;
 
                 get(dbRef(db, `users/${id}`)).then(snapshot => {
-                    userDetails.value = snapshot.val()
+                    userDetails.value.name = snapshot.val().name
                     userDetails.value.id = snapshot.key
 
                     router.push(`/${snapshot.key}`)
                 })
 
-      
+
             } else {
                 userDetails.value = {}
                 router.push('/auth')

@@ -3,6 +3,7 @@ import { ref as vueRef } from 'vue'
 import { uid } from 'quasar'
 import { db } from 'src/boot/firebase'
 import { ref as dbRef, set, get, onChildAdded, onChildChanged, remove, update } from "firebase/database";
+import { useRoute } from 'vue-router';
 
 export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
@@ -19,6 +20,10 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
     const showHistoryToday = vueRef(false)
     const showHistoryTotal = vueRef(false)
 
+    const route = useRoute()
+
+    const getUserId = () => { return route.params.userId }
+
     const getDay = () => {
         let d = new Date()
         return d.toLocaleDateString().replace(/\./g, '-')
@@ -27,6 +32,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
     const addProductToFirebase = (payLoad, quantity) => {
         if (payLoad && quantity) {
             const day = getDay()
+            const userId = getUserId()
 
             const roundToTwoDecimalPlaces = (value) => {
                 return parseFloat(value.toFixed(2))
@@ -42,7 +48,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
             macronutrients.value.carbohydrates = roundToTwoDecimalPlaces(macronutrients.value.carbohydrates)
             macronutrients.value.calories = roundToTwoDecimalPlaces(macronutrients.value.calories)
 
-            set(dbRef(db, `dailies/${day}/total`), {
+            set(dbRef(db, `users/${userId}/dailies/${day}/total`), {
                 calories: macronutrients.value.calories,
                 proteins: macronutrients.value.proteins,
                 fats: macronutrients.value.fats,
@@ -50,7 +56,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
             })
 
             const id = uid()
-            set(dbRef(db, `dailies/${day}/history/${id}`), {
+            set(dbRef(db, `users/${userId}/dailies/${day}/history/${id}`), {
                 calories: roundToTwoDecimalPlaces(payLoad.calories * (quantity / 100)),
                 proteins: roundToTwoDecimalPlaces(payLoad.proteins * (quantity / 100)),
                 fats: roundToTwoDecimalPlaces(payLoad.fats * (quantity / 100)),
@@ -63,16 +69,17 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
     const firebaseGetProducts = () => {
         const day = getDay()
+        const userId = getUserId()
 
-        onChildAdded(dbRef(db, `dailies/${day}/history`), snapshot => {
+        onChildAdded(dbRef(db, `users/${userId}/dailies/${day}/history`), snapshot => {
             macronutrientsHistory.value[snapshot.key] = snapshot.val()
         })
 
-        onChildAdded(dbRef(db, `dailies/${day}/total`), snapshot => {
+        onChildAdded(dbRef(db, `users/${userId}/dailies/${day}/total`), snapshot => {
             macronutrients.value[snapshot.key] = snapshot.val()
         })
 
-        onChildChanged(dbRef(db, `dailies/${day}/total`), snapshot => {
+        onChildChanged(dbRef(db, `users/${userId}/dailies/${day}/total`), snapshot => {
             macronutrients.value[snapshot.key] = snapshot.val()
         })
     }
@@ -87,13 +94,16 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         }
 
         macronutrientsHistory.value = {}
+        macronutrientsHistoryTotal.value = {}
 
         const day = getDay()
-        remove(dbRef(db, `dailies/${day}`))
+        const userId = getUserId()
+        remove(dbRef(db, `users/${userId}/dailies/${day}`))
     }
 
     const firebaseCheckHistoryTotal = () => {
-        get(dbRef(db, `dailies`)).then((snapshot) => {
+        const userId = getUserId()
+        get(dbRef(db, `users/${userId}/dailies`)).then((snapshot) => {
 
             snapshot.forEach((data) => {
                 const totalChild = data.child('total')
@@ -106,12 +116,13 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
     const firebaseDeleteProductFromHistory = (payLoad) => {
         const day = getDay()
+        const userId = getUserId()
 
         const roundToTwoDecimalPlaces = (value) => {
             return parseFloat(value.toFixed(2))
         }
 
-        get(dbRef(db, `dailies/${day}/history/${payLoad}`)).then(snapshot => {
+        get(dbRef(db, `users/${userId}/dailies/${day}/history/${payLoad}`)).then(snapshot => {
             macronutrients.value.calories -= snapshot.val().calories
             macronutrients.value.proteins -= snapshot.val().proteins
             macronutrients.value.fats -= snapshot.val().fats
@@ -122,10 +133,10 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
             macronutrients.value.carbohydrates = roundToTwoDecimalPlaces(macronutrients.value.carbohydrates)
             macronutrients.value.calories = roundToTwoDecimalPlaces(macronutrients.value.calories)
 
-            update(dbRef(db, `dailies/${day}/total`), macronutrients.value)
+            update(dbRef(db, `users/${userId}/dailies/${day}/total`), macronutrients.value)
         })
 
-        remove(dbRef(db, `dailies/${day}/history/${payLoad}`))
+        remove(dbRef(db, `users/${userId}/dailies/${day}/history/${payLoad}`))
     }
 
     return {

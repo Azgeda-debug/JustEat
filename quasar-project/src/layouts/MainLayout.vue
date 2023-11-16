@@ -57,7 +57,10 @@
           </q-list>
         </q-btn-dropdown>
 
-        <q-toolbar-title class="absolute-center gt-xs">
+        <q-toolbar-title
+          class="absolute-center"
+          :class="userDetails.id ? 'gt-xs' : ''"
+        >
           {{ pageTitle }}
         </q-toolbar-title>
 
@@ -124,7 +127,7 @@ const userDetails = computed(() => {
 });
 
 const pageTitle = computed(() => {
-  if (userDetails.value.id) {
+  if (userDetails.value && userDetails.value.id) {
     return userDetails.value.name;
   } else {
     return "JustEat";

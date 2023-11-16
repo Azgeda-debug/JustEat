@@ -30,7 +30,7 @@
       v-model="formData.password"
       autocomplete
       type="password"
-      label="Passwprd *"
+      label="Password *"
       :rules="[(val) => (val && val.length > 0) || 'Please type your password']"
     />
 
