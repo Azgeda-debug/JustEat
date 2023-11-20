@@ -29,8 +29,8 @@
           v-ripple
           class="flex items-center justify-between"
         >
-          <q-item-section top class="col-sm-3 col-xs-6">
-            <q-item-label class="text-h6">{{ product.name }}</q-item-label>
+          <q-item-section top class="col-sm-3 col-xs-7">
+            <q-item-label class="text-bold">{{ product.name }}</q-item-label>
           </q-item-section>
 
           <q-item-section top class="gt-xs text-center absolute-center col-6">
@@ -48,7 +48,7 @@
             </q-item-label>
           </q-item-section>
 
-          <q-item-section top side class="col-sm-3 col-xs-6">
+          <q-item-section top side class="col-sm-3 col-xs-5">
             <div class="text-grey-8 q-gutter-xs">
               <q-btn
                 @click.stop="addProduct(key)"

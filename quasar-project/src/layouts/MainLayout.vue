@@ -75,7 +75,18 @@
           v-model="searchProductContent"
           label="Search"
           type="text"
-        />
+        >
+          <template v-slot:append>
+            <q-btn
+              @click.left="searchProduct"
+              flat
+              dense
+              rounded
+              size="12px"
+              icon="close"
+            />
+          </template>
+        </q-input>
       </q-toolbar>
     </q-header>
 
@@ -135,7 +146,10 @@ const pageTitle = computed(() => {
 });
 
 const searchProductContent = ref("");
-const searchProduct = () => {
+const searchProduct = (e) => {
+  if (e.type == "click") {
+    searchProductContent.value = "";
+  }
   productStore.searchProductContent = searchProductContent.value;
 };
 
