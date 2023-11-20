@@ -4,11 +4,11 @@
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       class="q-pa-md"
-      :class="  !props.showProductForm ? 'q-mt-md' : ''"
+      :class="!props.showProductForm ? 'q-mt-md' : ''"
       :style="
         !props.showProductForm
-          ? 'height: 85vh; max-width: 100%'
-          : 'height: 55vh; max-width: 100%'
+          ? 'height: 81vh; max-width: 100%'
+          : 'height: 55.2vh; max-width: 100%'
       "
     >
       <q-list bordered separator>

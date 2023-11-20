@@ -10,7 +10,9 @@
           flat
           dense
           class="absolute-left text-white"
-          label="Options"
+          label="Menu"
+          transition-show="scale"
+          transition-hide="scale"
         >
           <q-list>
             <q-item
