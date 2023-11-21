@@ -119,6 +119,58 @@
       </div>
     </q-dialog>
 
+    <q-dialog v-model="usersStore.showMacronutrientsForm">
+      <div class="bg-white q-pa-lg">
+        <q-form class="q-gutter-md">
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="usersStore.userDetails.macronutrients.calories"
+            hint="Calories"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="usersStore.userDetails.macronutrients.proteins"
+            hint="Proteins"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="usersStore.userDetails.macronutrients.fats"
+            hint="Fats"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="usersStore.userDetails.macronutrients.carbohydrates"
+            hint="Carbohydrates"
+          />
+
+          <div class="text-center">
+            <q-btn
+              v-close-popup
+              @click.prevent="usersStore.firebaseChangeMacronutrients"
+              label="Change"
+              type="submit"
+              color="primary"
+            />
+          </div>
+        </q-form>
+      </div>
+    </q-dialog>
+
     <transition
       appear
       enter-active-class="animated fadeIn"
@@ -204,4 +256,5 @@ onMounted(() => {
 .q-scrollarea__bar {
   z-index: 2;
 }
+
 </style>

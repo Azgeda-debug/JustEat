@@ -25,6 +25,19 @@
               </q-item-section>
             </q-item>
 
+            <q-item
+              clickable
+              v-close-popup
+              @click="
+                usersStore.showMacronutrientsForm =
+                  !usersStore.showMacronutrientsForm
+              "
+            >
+              <q-item-section>
+                <q-item-label>Change macronutrients</q-item-label>
+              </q-item-section>
+            </q-item>
+
             <q-item clickable v-close-popup @click="currentDayStore.resetDay()">
               <q-item-section>
                 <q-item-label>Reset Day</q-item-label>
@@ -98,16 +111,20 @@
       class="q-py-xs bg-primary text-white text-center row"
     >
       <span class="text-h6 col-6"
-        >Kcal: {{ macronutrients.calories || 0 }} / 2800
+        >Kcal: {{ macronutrients.calories || 0 }} /
+        {{ userDetails.macronutrients.calories }}
       </span>
       <span class="text-h6 col-6"
-        >P: {{ macronutrients.proteins || 0 }}g / 240g
+        >P: {{ macronutrients.proteins || 0 }}g /
+        {{ userDetails.macronutrients.proteins }} g
       </span>
       <span class="text-h6 col-6">
-        C: {{ macronutrients.carbohydrates || 0 }}g / 320g
+        C: {{ macronutrients.carbohydrates || 0 }}g /
+        {{ userDetails.macronutrients.carbohydrates }} g
       </span>
       <span class="text-h6 col-6">
-        F: {{ macronutrients.fats || 0 }}g / 60g</span
+        F: {{ macronutrients.fats || 0 }}g /
+        {{ userDetails.macronutrients.fats }} g</span
       >
     </q-footer>
 
@@ -161,6 +178,8 @@ const checkHistory = () => {
   currentDayStore.showHistoryTotal = true;
   currentDayStore.firebaseCheckHistoryTotal();
 };
+
+const changeMacronutrients = () => {};
 </script>
 
 <style lang="scss">

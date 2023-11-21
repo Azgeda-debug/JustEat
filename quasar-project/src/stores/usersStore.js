@@ -3,19 +3,21 @@ import { ref as vueRef } from 'vue'
 import { useQuasar } from 'quasar'
 import { db, auth } from 'src/boot/firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { ref as dbRef, set, get } from "firebase/database";
-import { useRouter } from 'vue-router';
+import { ref as dbRef, set, get, update } from "firebase/database";
+import { useRouter, useRoute } from 'vue-router';
 
 export const useUsersStore = defineStore('usersStore', () => {
 
     const $q = useQuasar()
     const router = useRouter()
+    const route = useRoute()
 
     const userDetails = vueRef({
         name: '',
-        email: '',
-        id: ''
+        id: '',
+        macronutrients: {},
     })
+    const showMacronutrientsForm = vueRef(false)
 
     const firebaseRegisterUser = (payLoad) => {
         if (payLoad.name.trim() && payLoad.email.trim() && payLoad.password.trim()) {
@@ -31,8 +33,16 @@ export const useUsersStore = defineStore('usersStore', () => {
                     const id = response.user.uid;
 
                     set(dbRef(db, `users/${id}`), {
-                        name: payLoad.name,
-                        email: payLoad.email
+                        firebaseUserDetails: {
+                            name: payLoad.name,
+                            email: payLoad.email,
+                            macronutrients: {
+                                calories: 2010,
+                                carbohydrates: 250,
+                                fats: 50,
+                                proteins: 140
+                            }
+                        }
                     })
 
                     userDetails.value = {
@@ -75,13 +85,14 @@ export const useUsersStore = defineStore('usersStore', () => {
             })
         }
     }
+
     const firebaseLoginUser = (payLoad) => {
         if (payLoad.email.trim() && payLoad.password.trim()) {
             signInWithEmailAndPassword(auth, payLoad.email, payLoad.password)
                 .then((response) => { })
                 .catch((error) => {
                     const errorCode = error.code
-                    if (errorCode == 'invalid-email') {
+                    if (errorCode == 'auth/invalid-email') {
                         $q.notify({
                             type: 'negative',
                             iconL: "warning",
@@ -108,11 +119,12 @@ export const useUsersStore = defineStore('usersStore', () => {
             if (user) {
                 const id = user.uid;
 
-                get(dbRef(db, `users/${id}`)).then(snapshot => {
+                get(dbRef(db, `users/${id}/firebaseUserDetails`)).then(snapshot => {
                     userDetails.value.name = snapshot.val().name
-                    userDetails.value.id = snapshot.key
+                    userDetails.value.macronutrients = snapshot.val().macronutrients
+                    userDetails.value.id = id
 
-                    router.push(`/${snapshot.key}`)
+                    router.push(`/${id}`)
                 })
 
 
@@ -123,11 +135,18 @@ export const useUsersStore = defineStore('usersStore', () => {
         });
     };
 
+    const firebaseChangeMacronutrients = () => {
+        const id = route.params.userId
+        update(dbRef(db, `users/${id}/firebaseUserDetails/macronutrients`), userDetails.value.macronutrients)
+    }
+
     return {
         userDetails,
+        showMacronutrientsForm,
         firebaseRegisterUser,
         firebaseLoginUser,
         firebaseLogoutUser,
         firebaseOnAuthStateChanged,
+        firebaseChangeMacronutrients,
     }
 });
