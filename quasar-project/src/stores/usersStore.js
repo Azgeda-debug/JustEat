@@ -5,12 +5,17 @@ import { db, auth } from 'src/boot/firebase'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as dbRef, set, get, update } from "firebase/database";
 import { useRouter, useRoute } from 'vue-router';
+import { useCurrentDayStore } from './currentDayStore';
+import { useProductStore } from './productStore';
 
 export const useUsersStore = defineStore('usersStore', () => {
 
     const $q = useQuasar()
     const router = useRouter()
     const route = useRoute()
+
+    const currentDayStore = useCurrentDayStore()
+    const productStore = useProductStore()
 
     const userDetails = vueRef({
         name: '',
@@ -130,6 +135,12 @@ export const useUsersStore = defineStore('usersStore', () => {
 
             } else {
                 userDetails.value = {}
+                productStore.products = {}
+                productStore.searchProductContent = ''
+                currentDayStore.macronutrients = {}
+                currentDayStore.macronutrientsHistory = {}
+                currentDayStore.macronutrientsHistoryTotal = {}
+
                 router.push('/auth')
             }
         });

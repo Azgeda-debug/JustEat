@@ -106,7 +106,12 @@
     </q-header>
 
     <q-footer
-      v-if="!route.path.includes('/auth')"
+      v-if="
+        !route.path.includes('/auth') &&
+        macronutrients &&
+        userDetails &&
+        userDetails.macronutrients
+      "
       bordered
       class="q-py-xs bg-primary text-white text-center row"
     >
@@ -135,7 +140,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useProductStore } from "src/stores/productStore";
 import { useUsersStore } from "src/stores/usersStore";
@@ -147,15 +152,20 @@ const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 const usersStore = useUsersStore();
 
+const showProductForm = ref(false);
+
+// Holds the macronutrients data obtained from the store
 const macronutrients = ref({});
 currentDayStore.$subscribe((mutation, state) => {
   macronutrients.value = currentDayStore.macronutrients;
 });
 
+// Holds information about the logged in user
 const userDetails = computed(() => {
   return usersStore.userDetails;
 });
 
+// Shows the username if the user is logged in, or JustEat if the user is logged out
 const pageTitle = computed(() => {
   if (userDetails.value && userDetails.value.id) {
     return userDetails.value.name;
@@ -164,6 +174,8 @@ const pageTitle = computed(() => {
   }
 });
 
+// Clears the search bar if the user clicks the Clear button next to the search bar,
+// or searches for a product that the user wants to find
 const searchProductContent = ref("");
 const searchProduct = (e) => {
   if (e.type == "click") {
@@ -172,14 +184,18 @@ const searchProduct = (e) => {
   productStore.searchProductContent = searchProductContent.value;
 };
 
-const showProductForm = ref(false);
-
+// Displays the user's history from the beginning
 const checkHistory = () => {
   currentDayStore.showHistoryTotal = true;
   currentDayStore.firebaseCheckHistoryTotal();
 };
 
-const changeMacronutrients = () => {};
+// Clear the search bar when the user logs in or switches to a different user.
+watch(route, (newVal) => {
+  if(newVal.params.userId != undefined) {
+    searchProductContent.value = ''
+  }
+})
 </script>
 
 <style lang="scss">

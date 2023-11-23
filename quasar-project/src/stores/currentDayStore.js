@@ -4,11 +4,11 @@ import { uid } from 'quasar'
 import { db } from 'src/boot/firebase'
 import { ref as dbRef, set, get, onChildAdded, onChildChanged, remove, update } from "firebase/database";
 import { useRoute } from 'vue-router';
+import { format } from "date-fns";
 
 export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
     const macronutrients = vueRef({
-        name: {},
         calories: 0,
         proteins: 0,
         fats: 0,
@@ -26,7 +26,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
     const getDay = () => {
         let d = new Date()
-        return d.toLocaleDateString().replace(/\./g, '-')
+        return format(d, "dd-MM-yyyy");
     }
 
     const addProductToFirebase = (payLoad, quantity) => {
@@ -38,15 +38,10 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
                 return parseFloat(value.toFixed(2))
             }
 
-            macronutrients.value.proteins += payLoad.proteins * (quantity / 100)
-            macronutrients.value.fats += payLoad.fats * (quantity / 100)
-            macronutrients.value.carbohydrates += payLoad.carbohydrates * (quantity / 100)
-            macronutrients.value.calories += payLoad.calories * (quantity / 100)
-
-            macronutrients.value.proteins = roundToTwoDecimalPlaces(macronutrients.value.proteins)
-            macronutrients.value.fats = roundToTwoDecimalPlaces(macronutrients.value.fats)
-            macronutrients.value.carbohydrates = roundToTwoDecimalPlaces(macronutrients.value.carbohydrates)
-            macronutrients.value.calories = roundToTwoDecimalPlaces(macronutrients.value.calories)
+            Object.keys(payLoad).forEach((property) => {
+                macronutrients.value[property] += payLoad[property] * (quantity / 100);
+                macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+            });
 
             set(dbRef(db, `users/${userId}/dailies/${day}/total`), {
                 calories: macronutrients.value.calories,
@@ -86,7 +81,6 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
     const resetDay = () => {
         macronutrients.value = {
-            name: {},
             calories: 0,
             proteins: 0,
             fats: 0,
@@ -123,15 +117,11 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         }
 
         get(dbRef(db, `users/${userId}/dailies/${day}/history/${payLoad}`)).then(snapshot => {
-            macronutrients.value.calories -= snapshot.val().calories
-            macronutrients.value.proteins -= snapshot.val().proteins
-            macronutrients.value.fats -= snapshot.val().fats
-            macronutrients.value.carbohydrates -= snapshot.val().carbohydrates
 
-            macronutrients.value.proteins = roundToTwoDecimalPlaces(macronutrients.value.proteins)
-            macronutrients.value.fats = roundToTwoDecimalPlaces(macronutrients.value.fats)
-            macronutrients.value.carbohydrates = roundToTwoDecimalPlaces(macronutrients.value.carbohydrates)
-            macronutrients.value.calories = roundToTwoDecimalPlaces(macronutrients.value.calories)
+            Object.keys(payLoad).forEach((property) => {
+                macronutrients.value[property] -= payLoad[property] * (quantity / 100);
+                macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+            });
 
             update(dbRef(db, `users/${userId}/dailies/${day}/total`), macronutrients.value)
         })

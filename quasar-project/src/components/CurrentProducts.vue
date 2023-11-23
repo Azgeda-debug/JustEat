@@ -118,7 +118,7 @@ watch(searchProductContent, (newVal) => {
   }
 });
 
-//  Show information about the product (more useful for the mobile version)
+//  Displays information about the product (more useful for the mobile version)
 const showProduct = (product) => {
   $q.dialog({
     dark: true,

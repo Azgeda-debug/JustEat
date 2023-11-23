@@ -207,7 +207,7 @@ const $q = useQuasar();
 const usersStore = useUsersStore();
 const currentDayStore = useCurrentDayStore();
 
-// Holds today's product data obtained from the store
+// Holds today's products data obtained from the store
 const totalToday = ref({});
 const macronutrientsHistory = ref({});
 currentDayStore.$subscribe((mutation, state) => {

@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 export const useProductStore = defineStore('productStore', () => {
 
   const products = vueRef({})
-  const searchProductContent = vueRef()
+  const searchProductContent = vueRef('')
   const route = useRoute()
 
   const getUserId = () => { return route.params.userId }
