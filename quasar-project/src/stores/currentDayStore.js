@@ -39,8 +39,11 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
             }
 
             Object.keys(payLoad).forEach((property) => {
-                macronutrients.value[property] += payLoad[property] * (quantity / 100);
-                macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+                if (property != 'name') {
+                    macronutrients.value[property] += payLoad[property] * (quantity / 100);
+                    macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+
+                }
             });
 
             set(dbRef(db, `users/${userId}/dailies/${day}/total`), {
@@ -118,9 +121,11 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
 
         get(dbRef(db, `users/${userId}/dailies/${day}/history/${payLoad}`)).then(snapshot => {
 
-            Object.keys(payLoad).forEach((property) => {
-                macronutrients.value[property] -= payLoad[property] * (quantity / 100);
-                macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+            Object.keys(snapshot.val()).forEach((property) => {
+                if (property != 'name' && property != 'quantity') {
+                    macronutrients.value[property] -= snapshot.val()[property]
+                    macronutrients.value[property] = roundToTwoDecimalPlaces(macronutrients.value[property]);
+                }
             });
 
             update(dbRef(db, `users/${userId}/dailies/${day}/total`), macronutrients.value)
