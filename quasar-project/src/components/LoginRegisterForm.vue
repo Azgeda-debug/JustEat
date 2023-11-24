@@ -37,13 +37,20 @@
       dense
       v-model="formData.password"
       autocomplete
-      type="password"
+      :type=" showPassword ? 'password' : 'text'"
       label="Password *"
       :rules="[(val) => (val && val.length > 0) || 'Please type your password']"
     >
       <template v-slot:prepend>
         <q-icon name="lock" />
       </template>
+      <template v-slot:append>
+          <q-icon
+            :name="showPassword ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="showPassword = !showPassword"
+          />
+        </template>
     </q-input>
 
     <div class="text-center">
@@ -59,8 +66,10 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps  } from "vue";
 import { useUsersStore } from "src/stores/usersStore";
+
+const showPassword = ref(true)
 
 const props = defineProps({
   slideName: String,
