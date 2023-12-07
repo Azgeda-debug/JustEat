@@ -119,7 +119,7 @@
       </div>
     </q-dialog>
 
-    <q-dialog v-model="usersStore.showMacronutrientsForm">
+    <q-dialog v-model="usersStore.showChangeMacronutrientsForm">
       <div class="bg-white q-pa-lg">
         <q-form class="q-gutter-md">
           <q-input
@@ -163,6 +163,62 @@
               v-close-popup
               @click.prevent="usersStore.firebaseChangeMacronutrients"
               label="Change"
+              type="submit"
+              color="primary"
+            />
+          </div>
+        </q-form>
+      </div>
+    </q-dialog>
+
+    <q-dialog v-model="usersStore.showAddMacronutrientsForm">
+      <div class="bg-white q-pa-lg">
+        <q-form class="q-gutter-md">
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="macronutrients.calories"
+            min="0"
+            hint="Calories"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="macronutrients.proteins"
+            min="0"
+            hint="Proteins"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="macronutrients.fats"
+            min="0"
+            hint="Fats"
+          />
+
+          <q-input
+            outlined
+            rounded
+            dense
+            type="number"
+            v-model="macronutrients.carbohydrates"
+            min="0"
+            hint="Carbohydrates"
+          />
+
+          <div class="text-center">
+            <q-btn
+              v-close-popup
+              @click.prevent="AddMacronutrients"
+              label="Add"
               type="submit"
               color="primary"
             />
@@ -221,6 +277,17 @@ const deleteProductFromToday = (id) => {
   currentDayStore.firebaseDeleteProductFromHistory(id);
 };
 
+const macronutrients = ref({
+  calories: 0,
+  proteins: 0,
+  fats: 0,
+  carbohydrates: 0,
+});
+
+const AddMacronutrients = () => {
+  currentDayStore.firebaseAddMacronutrients(macronutrients.value)
+}
+
 onMounted(() => {
   if (!usersStore.userDetails.id) {
     router.push("/auth");
@@ -256,5 +323,4 @@ onMounted(() => {
 .q-scrollarea__bar {
   z-index: 2;
 }
-
 </style>

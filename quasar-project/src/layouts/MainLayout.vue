@@ -29,12 +29,25 @@
               clickable
               v-close-popup
               @click="
-                usersStore.showMacronutrientsForm =
-                  !usersStore.showMacronutrientsForm
+                usersStore.showChangeMacronutrientsForm =
+                  !usersStore.showChangeMacronutrientsForm
               "
             >
               <q-item-section>
-                <q-item-label>Change macronutrients</q-item-label>
+                <q-item-label>Change Macronutrients</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-close-popup
+              @click="
+                usersStore.showAddMacronutrientsForm =
+                  !usersStore.showAddMacronutrientsForm
+              "
+            >
+              <q-item-section>
+                <q-item-label>Add Macronutrients</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -90,6 +103,7 @@
           v-model="searchProductContent"
           label="Search"
           type="text"
+          ref="inputSearch"
         >
           <template v-slot:append>
             <q-btn
@@ -177,9 +191,11 @@ const pageTitle = computed(() => {
 // Clears the search bar if the user clicks the Clear button next to the search bar,
 // or searches for a product that the user wants to find
 const searchProductContent = ref("");
+const inputSearch = ref("");
 const searchProduct = (e) => {
   if (e.type == "click") {
     searchProductContent.value = "";
+    inputSearch.value.focus();
   }
   productStore.searchProductContent = searchProductContent.value;
 };
@@ -192,10 +208,10 @@ const checkHistory = () => {
 
 // Clear the search bar when the user logs in or switches to a different user.
 watch(route, (newVal) => {
-  if(newVal.params.userId != undefined) {
-    searchProductContent.value = ''
+  if (newVal.params.userId != undefined) {
+    searchProductContent.value = "";
   }
-})
+});
 </script>
 
 <style lang="scss">

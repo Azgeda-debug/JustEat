@@ -22,7 +22,9 @@ export const useUsersStore = defineStore('usersStore', () => {
         id: '',
         macronutrients: {},
     })
+
     const showMacronutrientsForm = vueRef(false)
+    const showAddMacronutrientsForm = vueRef(false)
 
     const firebaseRegisterUser = (payLoad) => {
         if (payLoad.name.trim() && payLoad.email.trim() && payLoad.password.trim()) {

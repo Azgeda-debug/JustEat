@@ -134,6 +134,18 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         remove(dbRef(db, `users/${userId}/dailies/${day}/history/${payLoad}`))
     }
 
+    const firebaseAddMacronutrients = (payLoad) => {
+        macronutrients.value.calories += parseFloat(payLoad.calories)
+        macronutrients.value.proteins += parseFloat(payLoad.proteins)
+        macronutrients.value.fats += parseFloat(payLoad.fats)
+        macronutrients.value.carbohydrates += parseFloat(payLoad.carbohydrates)
+
+        const day = getDay()
+        const userId = getUserId()
+
+        update(dbRef(db, `users/${userId}/dailies/${day}/total`), macronutrients.value)
+    }
+
     return {
         macronutrients,
         macronutrientsHistory,
@@ -145,5 +157,6 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         firebaseCheckHistoryTotal,
         firebaseGetProducts,
         firebaseDeleteProductFromHistory,
+        firebaseAddMacronutrients,
     }
 });
