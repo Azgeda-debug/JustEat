@@ -6,7 +6,7 @@
     >
       <q-toolbar>
         <q-btn-dropdown
-          v-if="!route.path.includes('/auth')"
+          v-if="route.name == 'HomePage'"
           flat
           dense
           class="absolute-left text-white"
@@ -73,6 +73,12 @@
               </q-item-section>
             </q-item>
 
+            <q-item clickable v-close-popup @click="router.push('/about')">
+              <q-item-section>
+                <q-item-label>App Information</q-item-label>
+              </q-item-section>
+            </q-item>
+
             <q-item
               clickable
               v-close-popup
@@ -85,15 +91,21 @@
           </q-list>
         </q-btn-dropdown>
 
-        <q-toolbar-title
-          class="absolute-center"
-          :class="userDetails.id ? 'gt-xs' : ''"
-        >
-          {{ pageTitle }}
+        <q-btn
+          v-if="route.name == 'AboutPage'"
+          @click="router.go(-1)"
+          icon="arrow_back"
+          flat
+          rounded
+        />
+
+        <q-toolbar-title class="absolute-center">
+          <span v-show="route.name != 'AboutPage'" :class="userDetails.id ? 'gt-xs' : ''"> {{ pageTitle }}</span>
+          <span v-show="route.name == 'AboutPage'">JustEat</span>
         </q-toolbar-title>
 
         <q-input
-          v-if="!route.path.includes('/auth')"
+          v-if="route.name == 'HomePage'"
           @keyup="searchProduct"
           class="header-search"
           bg-color="white"
@@ -121,7 +133,7 @@
 
     <q-footer
       v-if="
-        !route.path.includes('/auth') &&
+        route.name == 'HomePage' &&
         macronutrients &&
         userDetails &&
         userDetails.macronutrients
@@ -158,9 +170,10 @@ import { computed, ref, watch } from "vue";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useProductStore } from "src/stores/productStore";
 import { useUsersStore } from "src/stores/usersStore";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 
 const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();

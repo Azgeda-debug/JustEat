@@ -1,6 +1,7 @@
 import MainLayout from 'layouts/MainLayout.vue'
 import HomePage from 'pages/HomePage.vue'
 import AuthPage from 'pages/AuthPage.vue'
+import AboutPage from 'pages/AboutPage.vue'
 import ErrorNotFound from 'pages/ErrorNotFound.vue'
 
 const routes = [
@@ -13,6 +14,11 @@ const routes = [
           path: ':userId',
           component: HomePage,
           name: 'HomePage',
+        },
+        {
+          path: '/about',
+          component: AboutPage,
+          name: 'AboutPage',
         },
         {
           path: '/auth',

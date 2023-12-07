@@ -7,11 +7,17 @@
       :class="!props.showProductForm ? 'q-mt-md' : ''"
       :style="
         !props.showProductForm
-          ? 'height: 81vh; max-width: 100%'
-          : 'height: 55.2vh; max-width: 100%'
+          ? 'height: 82vh; max-width: 100%'
+          : 'height: 42.2vh; max-width: 100%'
       "
     >
-      <q-list bordered separator>
+      <q-list
+        v-show="
+          Object.keys(filteredProducts).length || Object.keys(products).length
+        "
+        bordered
+        separator
+      >
         <div class="flex items-center justify-between">
           <q-item-label header>Name</q-item-label>
           <q-item-label header class="gt-xs">Calories per 100g</q-item-label>
