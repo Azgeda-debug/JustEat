@@ -47,6 +47,7 @@
         type="number"
         placeholder="Carbohydrates per 100g of Product"
         dense
+        step="0.1"
       />
 
       <q-btn
