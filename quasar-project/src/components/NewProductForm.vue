@@ -20,11 +20,13 @@
         type="number"
         placeholder="Calories per 100g of Product"
         dense
+        step="0.1"
       />
 
       <q-input
         outlined
         dense
+        step="0.1"
         v-model.number="newProduct.proteins"
         type="number"
         placeholder="Protein per 100g of Product"
@@ -36,6 +38,7 @@
         type="number"
         placeholder="Fat per 100g of Product"
         dense
+        step="0.1"
       />
 
       <q-input
