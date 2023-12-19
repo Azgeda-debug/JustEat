@@ -2,13 +2,15 @@ import { defineStore } from 'pinia';
 import { ref as vueRef } from 'vue'
 import { uid } from 'quasar'
 import { db } from 'src/boot/firebase'
-import { ref as dbRef, set, onChildAdded, onChildChanged, remove } from "firebase/database";
+import { ref as dbRef, set, onChildAdded, onChildChanged, remove, get } from "firebase/database";
 import { useRoute } from 'vue-router';
 
 export const useProductStore = defineStore('productStore', () => {
 
-  const products = vueRef({})
   const searchProductContent = vueRef('')
+
+  const showProductDatabaseForm = vueRef(false)
+
   const route = useRoute()
 
   const getUserId = () => { return route.params.userId }
@@ -26,6 +28,8 @@ export const useProductStore = defineStore('productStore', () => {
     }
   }
 
+  const products = vueRef({})
+  const loadingProducts = vueRef(true)
   const firebaseGetProducts = () => {
     const userId = getUserId()
     onChildAdded(dbRef(db, `users/${userId}/products`), snapshot => {
@@ -34,6 +38,13 @@ export const useProductStore = defineStore('productStore', () => {
 
     onChildChanged(dbRef(db, `users/${userId}/products`), snapshot => {
       products.value[snapshot.key] = snapshot.val()
+    })
+
+    get(dbRef(db, `users/${userId}/products`)).then((snapshot) => {
+      if (!snapshot.exists()) {
+        loadingProducts.value = false
+      }
+
     })
   }
 
@@ -46,7 +57,9 @@ export const useProductStore = defineStore('productStore', () => {
 
   return {
     products,
+    loadingProducts,
     searchProductContent,
+    showProductDatabaseForm,
     firebaseAddNewProduct,
     firebaseGetProducts,
     firebaseDeleteProduct,

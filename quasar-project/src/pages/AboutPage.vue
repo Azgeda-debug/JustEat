@@ -29,10 +29,7 @@
               >
                 <q-card>
                   <q-card-section class="bg-grey-3">
-                    <span v-if="item.title != 'Source code'">
-                      {{ item.answer }}</span
-                    >
-                    <a v-else :href="item.answer" target="_blank">click here</a>
+                    <span> {{ item.answer }}</span>
                   </q-card-section>
                 </q-card>
               </q-expansion-item>
@@ -98,8 +95,8 @@ const aboutItems = ref([
       "The app functions as a web application, allowing users to access it on any device with internet connectivity.",
   },
   {
-    title: "Source code",
-    answer: "https://github.com/Azgeda-debug/JustEat",
+    title: "Contact",
+    answer: "email: lukasz.kulenski17@op.pl",
   },
 ]);
 const instructionsButtons = ref([
@@ -142,7 +139,7 @@ const otherInstructions = ref([
   {
     optionName: "Information about a product on mobile devices",
     description: " Click on a product to view details on mobile devices.",
-  }
+  },
 ]);
 const tab = ref("about");
 </script>

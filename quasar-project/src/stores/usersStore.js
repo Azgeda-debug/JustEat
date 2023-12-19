@@ -18,13 +18,17 @@ export const useUsersStore = defineStore('usersStore', () => {
     const productStore = useProductStore()
 
     const userDetails = vueRef({
-        name: '',
+        userName: '',
         id: '',
-        macronutrients: {},
+        macronutrients: {
+            calories: 0,
+            proteins: 0,
+            fats: 0,
+            carbohydrates: 0,
+        },
     })
 
     const showMacronutrientsForm = vueRef(false)
-    const showAddMacronutrientsForm = vueRef(false)
 
     const firebaseRegisterUser = (payLoad) => {
         if (payLoad.name.trim() && payLoad.email.trim() && payLoad.password.trim()) {
@@ -34,7 +38,7 @@ export const useUsersStore = defineStore('usersStore', () => {
                     $q.notify({
                         type: 'positive',
                         iconL: "check_circle",
-                        message: 'User created successfully.'
+                        message: 'Account created successfully.'
                     })
 
                     const id = response.user.uid;
@@ -53,10 +57,17 @@ export const useUsersStore = defineStore('usersStore', () => {
                     })
 
                     userDetails.value = {
-                        name: payLoad.name,
-                        id: id
+                        userName: payLoad.name,
+                        macronutrients: {
+                            calories: 2010,
+                            carbohydrates: 250,
+                            fats: 50,
+                            proteins: 140
+                        },
+                        id: id,
                     }
-
+                    
+                    $q.loading.show()
                     router.push(`/${id}`)
                 })
                 .catch((error) => {
@@ -96,7 +107,9 @@ export const useUsersStore = defineStore('usersStore', () => {
     const firebaseLoginUser = (payLoad) => {
         if (payLoad.email.trim() && payLoad.password.trim()) {
             signInWithEmailAndPassword(auth, payLoad.email, payLoad.password)
-                .then((response) => { })
+                .then((response) => {
+                    $q.loading.show()
+                })
                 .catch((error) => {
                     const errorCode = error.code
                     if (errorCode == 'auth/invalid-email') {
@@ -127,19 +140,37 @@ export const useUsersStore = defineStore('usersStore', () => {
                 const id = user.uid;
 
                 get(dbRef(db, `users/${id}/firebaseUserDetails`)).then(snapshot => {
-                    userDetails.value.name = snapshot.val().name
-                    userDetails.value.macronutrients = snapshot.val().macronutrients
-                    userDetails.value.id = id
+                    const userData = snapshot.val();
 
-                    router.push(`/${id}`)
-                })
-
+                    if (userData) {
+                        userDetails.value.userName = userData.name;
+                        userDetails.value.macronutrients = userData.macronutrients;
+                        userDetails.value.id = id;
+                    }
+                   
+                    router.push(`/${id}`);
+                });
 
             } else {
-                userDetails.value = {}
+                userDetails.value.userName = ''
+                userDetails.value.id = ''
+                userDetails.value.macronutrients = {
+                    calories: 0,
+                    proteins: 0,
+                    fats: 0,
+                    carbohydrates: 0,
+                }
+
                 productStore.products = {}
                 productStore.searchProductContent = ''
-                currentDayStore.macronutrients = {}
+                productStore.loadingProducts = true
+
+                currentDayStore.macronutrients = {
+                    calories: 0,
+                    proteins: 0,
+                    fats: 0,
+                    carbohydrates: 0
+                }
                 currentDayStore.macronutrientsHistory = {}
                 currentDayStore.macronutrientsHistoryTotal = {}
 

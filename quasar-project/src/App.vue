@@ -12,3 +12,9 @@ onMounted(() => {
   usersStore.firebaseOnAuthStateChanged();
 });
 </script>
+
+<style lang="scss">
+body {
+  overflow: hidden !important;
+}
+</style>

@@ -20,6 +20,8 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
     const showHistoryToday = vueRef(false)
     const showHistoryTotal = vueRef(false)
 
+    const showAddMacronutrientsForm = vueRef(false)
+
     const route = useRoute()
 
     const getUserId = () => { return route.params.userId }
@@ -98,19 +100,45 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         remove(dbRef(db, `users/${userId}/dailies/${day}`))
     }
 
+
+    const sortDate = (dateA, dateB) => {
+        const dataA = new Date(dateA.split('-').reverse().join('-'));
+        const dataB = new Date(dateB.split('-').reverse().join('-'));
+
+        if (dataA < dataB) {
+            return 1;
+        }
+        if (dataA > dataB) {
+            return -1;
+        }
+        return 0;
+    };
+
+    const loadingHistoryTotal = vueRef(true)
     const firebaseCheckHistoryTotal = () => {
-        const userId = getUserId()
+        const userId = getUserId();
+        const historyTotalArray = [];
+
         get(dbRef(db, `users/${userId}/dailies`)).then((snapshot) => {
-
             snapshot.forEach((data) => {
-                const totalChild = data.child('total')
-                if (snapshot.exists()) {
-                    macronutrientsHistoryTotal.value[data.key] = totalChild.val()
+                const totalChild = data.child('total');
+                if (totalChild.exists()) {
+                    historyTotalArray.push({
+                        date: data.key,
+                        total: totalChild.val(),
+                    });
+                } else {
+                    loadingHistoryTotal.value = false
                 }
-            })
-        })
-    }
+            });
 
+            historyTotalArray.sort((a, b) => sortDate(a.date, b.date));
+
+            historyTotalArray.forEach((item) => {
+                macronutrientsHistoryTotal.value[item.date] = item.total;
+            });
+        });
+    };
     const firebaseDeleteProductFromHistory = (payLoad) => {
         const day = getDay()
         const userId = getUserId()
@@ -152,6 +180,8 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         macronutrientsHistoryTotal,
         showHistoryToday,
         showHistoryTotal,
+        showAddMacronutrientsForm,
+        loadingHistoryTotal,
         addProductToFirebase,
         resetDay,
         firebaseCheckHistoryTotal,

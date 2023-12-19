@@ -7,8 +7,8 @@
       :class="!props.showProductForm ? 'q-mt-md' : ''"
       :style="
         !props.showProductForm
-          ? 'height: 82vh; max-width: 100%'
-          : 'height: 42.2vh; max-width: 100%'
+          ? 'height: 81vh; max-width: 100%'
+          : 'height: 41vh; max-width: 100%'
       "
     >
       <q-list
@@ -182,9 +182,6 @@ const deleteProduct = (id) => {
   });
 };
 
-onMounted(() => {
-  productsStore.firebaseGetProducts();
-});
 </script>
 
 <style lang="scss">

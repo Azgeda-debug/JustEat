@@ -52,7 +52,6 @@
 
       <q-btn
         flat
-        no-caps
         label="Add"
         type="submit"
         class="bg-primary text-white q-px-xl"

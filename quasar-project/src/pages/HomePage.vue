@@ -1,6 +1,41 @@
 <template>
-  <q-page class="q-pa-sm overflow-hidden">
-    <div class="q-gutter-md text-center"></div>
+  <q-page class="q-pa-sm ">
+    <q-inner-loading
+      :showing="productStore.loadingProducts"
+      label="Loading products..."
+      label-class="text-blue-7"
+      color="blue-5"
+      label-style="font-size: 1.1em"
+    />
+
+    <transition
+      appear
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
+    >
+      <NewProductForm v-show="props.showProductForm" />
+    </transition>
+
+    <div
+      v-show="
+        Object.keys(productStore.products).length &&
+        !productStore.loadingProducts
+      "
+    >
+      <CurrentProducts :showProductForm="props.showProductForm" />
+    </div>
+
+    <div
+      v-show="
+        !Object.keys(productStore.products).length &&
+        !productStore.loadingProducts
+      "
+    >
+      <div class="text-center text-h6">
+        Start tracking your calories and macronutrients by adding your first
+        product.
+      </div>
+    </div>
 
     <q-dialog v-model="currentDayStore.showHistoryToday">
       <div
@@ -85,8 +120,9 @@
           style="width: 100%; height: 100%"
         >
           <q-list
-            v-if="
-              Object.keys(currentDayStore.macronutrientsHistoryTotal).length
+            v-show="
+              Object.keys(currentDayStore.macronutrientsHistoryTotal).length &&
+              !currentDayStore.loadingHistoryTotal
             "
             separator
           >
@@ -109,11 +145,26 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div v-else class="text-center">
+          <div
+            v-show="
+              !currentDayStore.loadingHistoryTotal &&
+              !Object.keys(currentDayStore.macronutrientsHistoryTotal).length
+            "
+            class="text-center"
+          >
             <span class="text-h6 text-bold"
               >Your history is empty. Add any product to start recording your
               history.</span
             >
+          </div>
+          <div>
+            <q-inner-loading
+              :showing="currentDayStore.loadingHistoryTotal"
+              label="Loading history..."
+              label-class="text-blue-7"
+              color="blue-5"
+              label-style="font-size: 1.1em"
+            />
           </div>
         </q-scroll-area>
       </div>
@@ -171,7 +222,7 @@
       </div>
     </q-dialog>
 
-    <q-dialog v-model="usersStore.showAddMacronutrientsForm">
+    <q-dialog v-model="currentDayStore.showAddMacronutrientsForm">
       <div class="bg-white q-pa-lg">
         <q-form class="q-gutter-md">
           <q-input
@@ -227,27 +278,24 @@
       </div>
     </q-dialog>
 
-    <transition
-      appear
-      enter-active-class="animated fadeIn"
-      leave-active-class="animated fadeOut"
-    >
-      <NewProductForm v-show="props.showProductForm" />
-    </transition>
+  <ProductDatabase />
 
-    <CurrentProducts :showProductForm="props.showProductForm" />
   </q-page>
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted } from "vue";
+import { ref, defineProps, onMounted, watch } from "vue";
 import { useQuasar } from "quasar";
 import NewProductForm from "src/components/NewProductForm";
 import CurrentProducts from "src/components/CurrentProducts";
+import ProductDatabase from "src/components/ProductDatabase";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useUsersStore } from "src/stores/usersStore";
+import { useProductStore } from "src/stores/productStore";
 import { customScrollBar } from "src/composables/ScrollBar.js";
 import { useRouter } from "vue-router";
+
+const loadingHistoryTotal = ref(true);
 
 // Scroll Bar Styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
@@ -262,6 +310,7 @@ const $q = useQuasar();
 
 const usersStore = useUsersStore();
 const currentDayStore = useCurrentDayStore();
+const productStore = useProductStore();
 
 // Holds today's products data obtained from the store
 const totalToday = ref({});
@@ -283,16 +332,31 @@ const macronutrients = ref({
   fats: 0,
   carbohydrates: 0,
 });
-
 const AddMacronutrients = () => {
-  currentDayStore.firebaseAddMacronutrients(macronutrients.value)
-}
+  currentDayStore.firebaseAddMacronutrients(macronutrients.value);
+};
+
+watch(productStore.products, (newVal) => {
+  if (newVal) {
+    productStore.loadingProducts = false;
+  }
+});
+
+watch(currentDayStore.macronutrientsHistoryTotal, (newVal) => {
+  if (newVal) {
+    currentDayStore.loadingHistoryTotal = false;
+  }
+});
 
 onMounted(() => {
   if (!usersStore.userDetails.id) {
     router.push("/auth");
   }
+
+  $q.loading.hide();
+
   currentDayStore.firebaseGetProducts();
+  productStore.firebaseGetProducts();
 });
 </script>
 

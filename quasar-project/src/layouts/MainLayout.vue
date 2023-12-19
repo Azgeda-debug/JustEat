@@ -29,6 +29,21 @@
               clickable
               v-close-popup
               @click="
+                productStore.showProductDatabaseForm =
+                  !productStore.showProductDatabaseForm
+              "
+            >
+              <q-item-section>
+                <q-item-label
+                  >Add a New Product Using the Product Database</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-close-popup
+              @click="
                 usersStore.showChangeMacronutrientsForm =
                   !usersStore.showChangeMacronutrientsForm
               "
@@ -42,18 +57,12 @@
               clickable
               v-close-popup
               @click="
-                usersStore.showAddMacronutrientsForm =
-                  !usersStore.showAddMacronutrientsForm
+                currentDayStore.showAddMacronutrientsForm =
+                  !currentDayStore.showAddMacronutrientsForm
               "
             >
               <q-item-section>
                 <q-item-label>Add Macronutrients</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="currentDayStore.resetDay()">
-              <q-item-section>
-                <q-item-label>Reset Day</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -70,6 +79,12 @@
             <q-item clickable v-close-popup @click="checkHistory">
               <q-item-section>
                 <q-item-label>Check History</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="currentDayStore.resetDay()">
+              <q-item-section>
+                <q-item-label>Reset Day</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -100,7 +115,12 @@
         />
 
         <q-toolbar-title class="absolute-center">
-          <span v-show="route.name != 'AboutPage'" :class="userDetails.id ? 'gt-xs' : ''"> {{ pageTitle }}</span>
+          <span
+            v-show="route.name != 'AboutPage'"
+            :class="userDetails.id ? 'gt-xs' : ''"
+          >
+            {{ pageTitle }}</span
+          >
           <span v-show="route.name == 'AboutPage'">JustEat</span>
         </q-toolbar-title>
 
@@ -195,7 +215,7 @@ const userDetails = computed(() => {
 // Shows the username if the user is logged in, or JustEat if the user is logged out
 const pageTitle = computed(() => {
   if (userDetails.value && userDetails.value.id) {
-    return userDetails.value.name;
+    return userDetails.value.userName;
   } else {
     return "JustEat";
   }
