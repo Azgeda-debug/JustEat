@@ -127,10 +127,8 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
                         date: data.key,
                         total: totalChild.val(),
                     });
-                    console.log('history not empty')
                 } else {
                     loadingHistoryTotal.value = false
-                    console.log('history empty')
                 }
             });
 

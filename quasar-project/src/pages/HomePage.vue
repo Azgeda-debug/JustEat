@@ -38,141 +38,169 @@
     </div>
 
     <q-dialog v-model="currentDayStore.showHistoryToday">
-      <div
-        v-if="macronutrientsHistory"
-        class="bg-white q-pa-sm"
-        style="width: 70vw; height: 60vh"
-      >
-        <q-scroll-area
-          :thumb-style="thumbStyle"
-          :bar-style="barStyle"
-          style="width: 100%; height: 100%"
-        >
-          <div class="q-mx-sm text-center text-h6 fixed bg-white today-header">
-            Kcal: {{ totalToday.calories || 0 }} Proteins:
-            {{ totalToday.proteins || 0 }}g Carbohydrates:
-            {{ totalToday.carbohydrates || 0 }}g Fats:
-            {{ totalToday.fats || 0 }}g
-          </div>
-          <q-separator />
-          <q-list separator class="today-list">
-            <q-item
-              v-for="(product, key) in macronutrientsHistory"
-              :key="key"
-              class="q-py-sm row justify-between items-end"
-            >
-              <q-item-section
-                :class="$q.screen.width < 600 ? 'full-width' : ''"
-              >
-                <q-item-label class="text-bold">{{
-                  product.name
-                }}</q-item-label>
-                <q-item-label>
-                  Product Quantity: {{ product.quantity }}g
-                </q-item-label>
-                <q-item-label caption>
-                  Proteins: {{ product.proteins }}g Carbohydrates:
-                  {{ product.carbohydrates }}g Fats: {{ product.fats }}g
-                </q-item-label>
-                <q-item-label class="text-bold row justify-between items-center"
-                  ><span class="">Kcal: {{ product.calories }}</span>
+      <q-card v-if="macronutrientsHistory" class="bg-white q-pa-sm">
+        <q-card-section class="text-center">
+          <span class="text-h6">
+            Here you can check which products you have added today.
+          </span>
+        </q-card-section>
 
-                  <q-btn
-                    @click="deleteProductFromToday(key)"
-                    size="12px"
-                    flat
-                    round
-                    icon="delete"
-                    title="delete"
-                    class="text-grey-8 lt-sm"
-                /></q-item-label>
-              </q-item-section>
-              <q-item-section side class="gt-xs">
-                <div class="text-grey-8">
-                  <q-btn
-                    @click="deleteProductFromToday(key)"
-                    size="12px"
-                    flat
-                    round
-                    icon="delete"
-                    title="delete"
-                  />
-                </div>
-              </q-item-section>
-            </q-item>
-            <div class="q-pa-xs fixed-bottom-right bg-white history-date">
-              {{ new Date().toLocaleDateString() }}
-            </div>
-          </q-list>
-        </q-scroll-area>
-      </div>
+        <q-card-section>
+          <q-scroll-area
+            :thumb-style="thumbStyle"
+            :bar-style="barStyle"
+            style="width: 100%; height: 50vh"
+          >
+            <q-list separator class="today-list">
+              <q-item
+                v-for="(product, key) in macronutrientsHistory"
+                :key="key"
+                class="q-py-sm row justify-between items-end"
+              >
+                <q-item-section
+                  :class="$q.screen.width < 600 ? 'full-width' : ''"
+                >
+                  <q-item-label class="text-bold">{{
+                    product.name
+                  }}</q-item-label>
+                  <q-item-label>
+                    Product Quantity: {{ product.quantity }}g
+                  </q-item-label>
+                  <q-item-label caption>
+                    Proteins: {{ product.proteins }}g Carbohydrates:
+                    {{ product.carbohydrates }}g Fats: {{ product.fats }}g
+                  </q-item-label>
+                  <q-item-label
+                    class="text-bold row justify-between items-center"
+                    ><span class="">Kcal: {{ product.calories }}</span>
+
+                    <q-btn
+                      @click="deleteProductFromToday(key)"
+                      size="12px"
+                      flat
+                      round
+                      icon="delete"
+                      title="delete"
+                      class="text-grey-8 lt-sm"
+                  /></q-item-label>
+                </q-item-section>
+                <q-item-section side class="gt-xs">
+                  <div class="text-grey-8">
+                    <q-btn
+                      @click="deleteProductFromToday(key)"
+                      size="12px"
+                      flat
+                      round
+                      icon="delete"
+                      title="delete"
+                    />
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-scroll-area>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            v-close-popup
+            no-caps
+            label="Close"
+            class="text-white bg-red-5"
+          />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
 
     <q-dialog v-model="currentDayStore.showHistoryTotal">
-      <div
+      <q-card
         v-if="currentDayStore.macronutrientsHistoryTotal"
         class="bg-white q-pa-sm"
-        style="width: 70vw; height: 60vh"
       >
-        <q-scroll-area
-          :thumb-style="thumbStyle"
-          :bar-style="barStyle"
-          style="width: 100%; height: 100%"
-        >
-          <q-list
-            v-show="
-              Object.keys(currentDayStore.macronutrientsHistoryTotal).length &&
-              !currentDayStore.loadingHistoryTotal
-            "
-            separator
+        <q-card-section class="text-center">
+          <span class="text-h6">
+            Here you can check your history from the beginning.
+          </span>
+        </q-card-section>
+
+        <q-card-section>
+          <q-scroll-area
+            :thumb-style="thumbStyle"
+            :bar-style="barStyle"
+            style="width: 100%; height: 50vh"
           >
-            <q-item
-              v-for="(
-                product, key
-              ) in currentDayStore.macronutrientsHistoryTotal"
-              :key="key"
-              class="q-py-sm row"
+            <q-list
+              v-show="
+                Object.keys(currentDayStore.macronutrientsHistoryTotal)
+                  .length && !currentDayStore.loadingHistoryTotal
+              "
+              separator
             >
-              <q-item-section>
-                <q-item-label class="text-h6">{{ key }}</q-item-label>
-                <q-item-label caption>
-                  Proteins: {{ product.proteins }}g Carbohydrates:
-                  {{ product.carbohydrates }}g Fats: {{ product.fats }}g
-                </q-item-label>
-                <q-item-label class="text-bold"
-                  >Kcal: {{ product.calories }}</q-item-label
-                >
-              </q-item-section>
-            </q-item>
-          </q-list>
-          <div
-            v-show="
-              !currentDayStore.loadingHistoryTotal &&
-              !Object.keys(currentDayStore.macronutrientsHistoryTotal).length
-            "
-            class="text-center"
-          >
-            <span class="text-h6 text-bold"
-              >Your history is empty. Add any product to start recording your
-              history.</span
+              <q-item
+                v-for="(
+                  product, key
+                ) in currentDayStore.macronutrientsHistoryTotal"
+                :key="key"
+                class="q-py-sm row"
+              >
+                <q-item-section>
+                  <q-item-label class="text-h6">{{ key }}</q-item-label>
+                  <q-item-label caption>
+                    Proteins: {{ product.proteins }}g Carbohydrates:
+                    {{ product.carbohydrates }}g Fats: {{ product.fats }}g
+                  </q-item-label>
+                  <q-item-label class="text-bold"
+                    >Kcal: {{ product.calories }}</q-item-label
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <div
+              v-show="
+                !currentDayStore.loadingHistoryTotal &&
+                !Object.keys(currentDayStore.macronutrientsHistoryTotal).length
+              "
+              class="text-center"
             >
-          </div>
-          <div>
-            <q-inner-loading
-              :showing="currentDayStore.loadingHistoryTotal"
-              label="Loading history..."
-              label-class="text-blue-7"
-              color="blue-5"
-              label-style="font-size: 1.1em"
-            />
-          </div>
-        </q-scroll-area>
-      </div>
+              <span class="text-h6 text-bold"
+                >Your history is empty. Add any product to start recording your
+                history.</span
+              >
+            </div>
+            <div>
+              <q-inner-loading
+                :showing="currentDayStore.loadingHistoryTotal"
+                label="Loading history..."
+                label-class="text-blue-7"
+                color="blue-5"
+                label-style="font-size: 1.1em"
+              />
+            </div>
+          </q-scroll-area>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            v-close-popup
+            no-caps
+            label="Close"
+            class="text-white bg-red-5"
+          />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
 
     <q-dialog v-model="usersStore.showChangeMacronutrientsForm">
       <div class="bg-white q-pa-lg">
-        <q-form class="q-gutter-md">
+        <div class="text-center">
+          <span class="text-h6">
+            Here you can change your macronutrient targets.
+          </span>
+        </div>
+
+        <q-form class="q-gutter-md q-mt-md">
           <q-input
             outlined
             rounded
@@ -209,7 +237,7 @@
             hint="Carbohydrates"
           />
 
-          <div class="flex justify-between">
+          <div class="flex justify-end q-gutter-x-md">
             <q-btn
               v-close-popup
               @click.prevent="usersStore.firebaseChangeMacronutrients"
@@ -226,7 +254,14 @@
 
     <q-dialog v-model="currentDayStore.showAddMacronutrientsForm">
       <div class="bg-white q-pa-lg">
-        <q-form class="q-gutter-md">
+        <div class="text-center">
+          <span class="text-h6">
+            Add macronutrients here. This is useful when you don't want to add a
+            new product to your product list.
+          </span>
+        </div>
+
+        <q-form class="q-gutter-md q-mt-md">
           <q-input
             outlined
             rounded
@@ -267,7 +302,7 @@
             hint="Carbohydrates"
           />
 
-          <div class="flex justify-between">
+          <div class="flex justify-end q-gutter-x-md">
             <q-btn
               v-close-popup
               @click.prevent="AddMacronutrients"
@@ -312,10 +347,8 @@ const currentDayStore = useCurrentDayStore();
 const productStore = useProductStore();
 
 // Holds today's products data obtained from the store
-const totalToday = ref({});
 const macronutrientsHistory = ref({});
 currentDayStore.$subscribe((mutation, state) => {
-  totalToday.value = currentDayStore.macronutrients;
   macronutrientsHistory.value = currentDayStore.macronutrientsHistory;
 });
 
@@ -360,27 +393,18 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.today-header,
-.history-date {
-  z-index: 2;
-}
+// .today-list {
+//   margin-top: 60px;
+//   margin-bottom: 18px;
 
-.history-date {
-  right: 20px;
-}
+//   @media (max-width: $breakpoint-xs-max) {
+//     margin-top: 70px;
+//   }
 
-.today-list {
-  margin-top: 60px;
-  margin-bottom: 18px;
-
-  @media (max-width: $breakpoint-xs-max) {
-    margin-top: 70px;
-  }
-
-  @media screen and (max-width: 500px) {
-    margin-top: 90px;
-  }
-}
+//   @media screen and (max-width: 500px) {
+//     margin-top: 90px;
+//   }
+// }
 
 .q-scrollarea__thumb,
 .q-scrollarea__bar {

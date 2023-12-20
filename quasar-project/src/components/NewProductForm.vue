@@ -50,7 +50,7 @@
         step="0.1"
       />
 
-      <div class="q-px-xl flex justify-between">
+      <div class="flex justify-end q-gutter-x-md">
         <q-btn flat padding="6px 35px" label="Add" type="submit" class="bg-primary text-white" />
 
         <q-btn  @click="productStore.showProductForm = false" flat padding="6px 35px" label="Close" class="bg-red-6 text-white" />
