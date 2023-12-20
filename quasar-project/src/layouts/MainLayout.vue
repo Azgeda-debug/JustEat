@@ -18,7 +18,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="showProductForm = !showProductForm"
+              @click="productStore.showProductForm = !productStore.showProductForm"
             >
               <q-item-section>
                 <q-item-label>Add a New Product</q-item-label>
@@ -180,7 +180,7 @@
     </q-footer>
 
     <q-page-container>
-      <router-view :showProductForm="showProductForm" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -198,8 +198,6 @@ const router = useRouter();
 const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 const usersStore = useUsersStore();
-
-const showProductForm = ref(false);
 
 // Holds the macronutrients data obtained from the store
 const macronutrients = ref({});

@@ -4,9 +4,9 @@
     transition-show="scale"
     transition-hide="scale"
   >
-    <q-card class="bg-white q-pa-lg">
-      <q-card-section>
-        <span class="text-h6 text-center"
+    <q-card class="bg-white q-pa-sm">
+      <q-card-section class="text-center">
+        <span class="text-h6"
           >In this window you can search for a product from the product
           database</span
         >
@@ -50,7 +50,7 @@
 
       <q-card-section>
         <q-item-label class="q-my-sm">
-          Macronutrients per 100 grams of product</q-item-label
+          Macronutrients per 100 grams of products</q-item-label
         >
 
         <q-scroll-area
@@ -94,7 +94,13 @@
       />
 
       <q-card-actions align="right">
-        <q-btn flat v-close-popup no-caps label="Close" class="text-red" />
+        <q-btn
+          flat
+          v-close-popup
+          no-caps
+          label="Close"
+        class="text-white bg-red-5"
+        />
       </q-card-actions>
     </q-card>
 
@@ -103,55 +109,102 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <q-card class="bg-white q-pa-lg">
+      <q-card class="bg-white q-pa-sm" style="max-width: max-content">
         <q-card-section>
           <q-list>
             <q-item>
-              <q-item-section class="q-gutter-sm">
-                <q-item-label class="text-bold">{{
-                  selectedProduct.name
-                }}</q-item-label>
-                <q-item-label
-                  >Calories: {{ selectedProduct.calories }}</q-item-label
-                >
-                <q-item-label
-                  >Carbohydrates:
-                  {{ selectedProduct.carbohydrates_total_g }} g</q-item-label
-                >
-                <q-item-label
-                  >Fats: {{ selectedProduct.fat_total_g }} g</q-item-label
-                >
-                <q-item-label
-                  >Proteins: {{ selectedProduct.protein_g }} g</q-item-label
-                >
-                <q-item-label
-                  >Cholesterol:
-                  {{ selectedProduct.cholesterol_mg }} mg</q-item-label
-                >
-                <q-item-label
-                  >Potassium:
-                  {{ selectedProduct.potassium_mg }} mg</q-item-label
-                >
-                <q-item-label
-                  >Sodium: {{ selectedProduct.sodium_mg }} mg</q-item-label
-                >
-                <q-item-label
-                  >Sugar: {{ selectedProduct.sugar_g }} g</q-item-label
-                >
+              <q-item-section class="q-gutter-sm flex flex-center">
+                <q-markup-table>
+                  <thead>
+                    <tr>
+                      <th class="text-left">Name</th>
+                      <th class="text-right">{{ selectedProduct.name }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Calories</td>
+                      <td class="text-right">{{ selectedProduct.calories }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Carbohydrates (g)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.carbohydrates_total_g }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Fats (g)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.fat_total_g }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Proteins (g)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.protein_g }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Sodium (mg)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.sodium_mg }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Potassium (mg)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.potassium_mg }}
+                      </td>
+                    </tr>
+                  </tbody>
+
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Cholesterol (mg)</td>
+                      <td class="text-right">
+                        {{ selectedProduct.cholesterol_mg }}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="text-left">Sugar (g)</td>
+                      <td class="text-right">{{ selectedProduct.sugar_g }}</td>
+                    </tr>
+                  </tbody>
+                </q-markup-table>
               </q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="center">
           <q-btn
             @click="addProductToFirebase"
             flat
             no-caps
             label="Add Product"
-            class="text-blue-5"
+           class="text-white bg-primary"
+          
           />
-          <q-btn flat v-close-popup no-caps label="Back" class="text-red" />
+          <q-btn
+            flat
+            v-close-popup
+            no-caps
+            label="Close"
+          class="text-white bg-red-5"
+           
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -199,42 +252,38 @@ const getMoreInformationAboutProduct = (item) => {
 };
 
 const addProductToFirebase = () => {
-  let checkProduct = 0;
+  let checkProduct = 1;
 
   Object.keys(productStore.products).forEach((key) => {
     if (
       selectedProduct.value.name.toLowerCase() ==
       productStore.products[key].name.toLowerCase()
     ) {
-    //   checkProduct = 0;
-        console.log('nie przeszlo')
-    } else {
-    //   checkProduct = 1;
-        console.log('przeszlo')
+      checkProduct = 0;
     }
   });
 
-//   if (!checkProduct) {
-//     $q.notify({
-//       type: "negative",
-//       message: "The product has already been added",
-//     });
-//   } else {
-//     const productItem = {
-//       name: selectedProduct.value.name,
-//       calories: selectedProduct.value.calories,
-//       proteins: selectedProduct.value.protein_g,
-//       fats: selectedProduct.value.fat_total_g,
-//       carbohydrates: selectedProduct.value.carbohydrates_total_g,
-//     };
+  if (!checkProduct) {
+    $q.notify({
+      type: "negative",
+      message: "The product has already been added",
+    });
+  } else {
+    const productItem = {
+      name: selectedProduct.value.name,
+      calories: selectedProduct.value.calories,
+      proteins: selectedProduct.value.protein_g,
+      fats: selectedProduct.value.fat_total_g,
+      carbohydrates: selectedProduct.value.carbohydrates_total_g,
+    };
 
-//     productStore.firebaseAddNewProduct(productItem);
+    productStore.firebaseAddNewProduct(productItem);
 
-//     $q.notify({
-//       type: "positive",
-//       message: "The product has been added successfully.",
-//     });
-//   }
+    $q.notify({
+      type: "positive",
+      message: "The product has been added successfully.",
+    });
+  }
 };
 
 onUnmounted(() => {

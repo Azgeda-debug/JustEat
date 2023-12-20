@@ -4,9 +4,9 @@
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       class="q-pa-md"
-      :class="!props.showProductForm ? 'q-mt-md' : ''"
+      :class="!productStore.showProductForm ? 'q-mt-md' : ''"
       :style="
-        !props.showProductForm
+        !productStore.showProductForm
           ? 'height: 81vh; max-width: 100%'
           : 'height: 41vh; max-width: 100%'
       "
@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useProductStore } from "src/stores/productStore";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useQuasar } from "quasar";
@@ -92,19 +92,15 @@ const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const $q = useQuasar();
 
-const props = defineProps({
-  showProductForm: Boolean,
-});
-
-const productsStore = useProductStore();
+const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 
 // Holds the product data obtained from the store
 const products = ref({});
 const searchProductContent = ref("");
-productsStore.$subscribe((mutation, state) => {
-  products.value = productsStore.products;
-  searchProductContent.value = productsStore.searchProductContent;
+productStore.$subscribe((mutation, state) => {
+  products.value = productStore.products;
+  searchProductContent.value = productStore.searchProductContent;
 });
 
 // Observing the input search and filtering the products
@@ -177,7 +173,7 @@ const deleteProduct = (id) => {
     },
     persistent: false,
   }).onOk(() => {
-    productsStore.firebaseDeleteProduct(id);
+    productStore.firebaseDeleteProduct(id);
     delete products.value[id];
   });
 };

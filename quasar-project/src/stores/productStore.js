@@ -9,6 +9,7 @@ export const useProductStore = defineStore('productStore', () => {
 
   const searchProductContent = vueRef('')
 
+  const showProductForm = vueRef(false)
   const showProductDatabaseForm = vueRef(false)
 
   const route = useRoute()
@@ -60,6 +61,7 @@ export const useProductStore = defineStore('productStore', () => {
     loadingProducts,
     searchProductContent,
     showProductDatabaseForm,
+    showProductForm,
     firebaseAddNewProduct,
     firebaseGetProducts,
     firebaseDeleteProduct,

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-sm ">
+  <q-page class="q-pa-sm">
     <q-inner-loading
       :showing="productStore.loadingProducts"
       label="Loading products..."
@@ -13,7 +13,7 @@
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
-      <NewProductForm v-show="props.showProductForm" />
+      <NewProductForm v-show="productStore.showProductForm" />
     </transition>
 
     <div
@@ -22,7 +22,7 @@
         !productStore.loadingProducts
       "
     >
-      <CurrentProducts :showProductForm="props.showProductForm" />
+      <CurrentProducts />
     </div>
 
     <div
@@ -209,7 +209,7 @@
             hint="Carbohydrates"
           />
 
-          <div class="text-center">
+          <div class="flex justify-between">
             <q-btn
               v-close-popup
               @click.prevent="usersStore.firebaseChangeMacronutrients"
@@ -217,6 +217,8 @@
               type="submit"
               color="primary"
             />
+
+            <q-btn v-close-popup label="Close" color="red-5" />
           </div>
         </q-form>
       </div>
@@ -265,7 +267,7 @@
             hint="Carbohydrates"
           />
 
-          <div class="text-center">
+          <div class="flex justify-between">
             <q-btn
               v-close-popup
               @click.prevent="AddMacronutrients"
@@ -273,18 +275,19 @@
               type="submit"
               color="primary"
             />
+
+            <q-btn v-close-popup label="Close" color="red-5" />
           </div>
         </q-form>
       </div>
     </q-dialog>
 
-  <ProductDatabase />
-
+    <ProductDatabase />
   </q-page>
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useQuasar } from "quasar";
 import NewProductForm from "src/components/NewProductForm";
 import CurrentProducts from "src/components/CurrentProducts";
@@ -299,10 +302,6 @@ const loadingHistoryTotal = ref(true);
 
 // Scroll Bar Styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
-
-const props = defineProps({
-  showProductForm: Boolean,
-});
 
 const router = useRouter();
 

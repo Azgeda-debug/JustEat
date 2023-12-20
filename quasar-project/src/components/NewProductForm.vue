@@ -50,12 +50,11 @@
         step="0.1"
       />
 
-      <q-btn
-        flat
-        label="Add"
-        type="submit"
-        class="bg-primary text-white q-px-xl"
-      />
+      <div class="q-px-xl flex justify-between">
+        <q-btn flat padding="6px 35px" label="Add" type="submit" class="bg-primary text-white" />
+
+        <q-btn  @click="productStore.showProductForm = false" flat padding="6px 35px" label="Close" class="bg-red-6 text-white" />
+      </div>
     </q-form>
     <q-separator class="q-mt-sm q-mb-xs" />
   </div>
@@ -65,7 +64,7 @@
 import { ref } from "vue";
 import { useProductStore } from "src/stores/productStore";
 
-const store = useProductStore();
+const productStore = useProductStore();
 
 const newProduct = ref({
   name: "",
@@ -77,7 +76,7 @@ const newProduct = ref({
 
 // Adding a new product to the database
 const addNewProduct = () => {
-  store.firebaseAddNewProduct(newProduct.value);
+  productStore.firebaseAddNewProduct(newProduct.value);
   newProduct.value = {
     name: "",
     calories: null,
