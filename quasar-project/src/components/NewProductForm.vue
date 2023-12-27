@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="row">
     <q-form
       @submit="addNewProduct"
       @keyup.enter="addNewProduct"
-      class="q-gutter-md text-center"
-      style="max-width: 60%; margin: 0 auto"
+      class="q-gutter-md col-md-6 col-12"
+      style="margin: 0 auto"
     >
       <q-input
         outlined
@@ -56,7 +56,6 @@
         <q-btn  @click="productStore.showProductForm = false" flat padding="6px 35px" label="Close" class="bg-red-6 text-white" />
       </div>
     </q-form>
-    <q-separator class="q-mt-sm q-mb-xs" />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="q-gutter-y-md">
-      <q-card class="shadow-1">
+      <q-card class="shadow-0">
         <q-tabs
           v-model="tab"
           dense
@@ -18,53 +18,70 @@
 
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="about">
-            <div class="text-h5 q-pb-md">About</div>
-            <q-list>
-              <q-expansion-item
-                v-for="(item, index) in aboutItems"
-                :key="index"
-                :label="item.title"
-                header-class="text-bold bg-grey-2"
-                class="q-py-sm"
-              >
-                <q-card>
-                  <q-card-section class="bg-grey-3">
-                    <span> {{ item.answer }}</span>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
-            </q-list>
+            <q-scroll-area
+              :thumb-style="thumbStyle"
+              :bar-style="barStyle"
+              class="q-pa-md"
+              :style="aboutScrollBarSizes"
+            >
+              <div class="text-h5 q-pb-md q-ml-xs">About</div>
+              <q-list bordered class="rounded-borders">
+                <q-expansion-item
+                  v-for="(item, index) in aboutItems"
+                  :key="index"
+                  expand-separator
+                  :label="item.title"
+                  header-class="text-bold"
+                  expand-icon-class="full-width"
+                >
+                  <q-card>
+                    <q-card-section class="text-justify">
+                      <span> {{ item.answer }}</span>
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+              </q-list>
+            </q-scroll-area>
           </q-tab-panel>
 
           <q-tab-panel name="instructions">
-            <div class="text-h5">How to Use</div>
-            <p class="q-pt-lg text-h6">Menu Buttons</p>
-            <q-list separator bordered>
-              <q-item
-                clickable
-                v-for="(item, index) in instructionsButtons"
-                :key="index"
-              >
-                <q-item-section>
-                  <q-item-section>{{ item.buttonName }}</q-item-section>
-                  <q-item-label caption>{{ item.buttonFunction }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
+            <q-scroll-area
+              :thumb-style="thumbStyle"
+              :bar-style="barStyle"
+              class="q-pa-md"
+              :style="aboutScrollBarSizes"
+            >
+              <div class="text-h5 q-pl-xs">How to Use</div>
+              <p class="q-pt-lg q-pl-xs text-h6">Menu Buttons</p>
+              <q-list separator bordered>
+                <q-item
+                  clickable
+                  v-for="(item, index) in instructionsButtons"
+                  :key="index"
+                >
+                  <q-item-section>
+                    <q-item-section>{{ item.buttonName }}</q-item-section>
+                    <q-item-label caption>{{
+                      item.buttonFunction
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
 
-            <p class="q-pt-lg text-h6">Others</p>
-            <q-list separator bordered>
-              <q-item
-                v-for="(item, index) in otherInstructions"
-                :key="index"
-                clickable
-              >
-                <q-item-section>
-                  <q-item-section>{{ item.optionName }}</q-item-section>
-                  <q-item-label caption>{{ item.description }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
+              <p class="q-pt-lg q-pl-xs text-h6">Others</p>
+              <q-list separator bordered>
+                <q-item
+                  v-for="(item, index) in otherInstructions"
+                  :key="index"
+                  clickable
+                >
+                  <q-item-section>
+                    <q-item-section>{{ item.optionName }}</q-item-section>
+                    <q-item-label caption>{{ item.description }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-scroll-area>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -73,7 +90,13 @@
 </template>
   
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { customScrollBar } from "src/composables/ScrollBar.js";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
+
+const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const aboutItems = ref([
   {
@@ -142,4 +165,24 @@ const otherInstructions = ref([
   },
 ]);
 const tab = ref("about");
+
+const aboutScrollBarSizes = computed(() => {
+  if ($q.screen.height > 799) {
+    return "height: 85vh; width: 100%";
+  } else {
+    return "  height: 80vh; width: 100%";
+  }
+});
 </script>
+
+<style lang="scss">
+.q-expansion-item {
+  .q-expansion-item__container {
+    .q-item {
+      div.q-item__section--main {
+        max-width: 75%;
+      }
+    }
+  }
+}
+</style>

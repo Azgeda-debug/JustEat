@@ -4,12 +4,8 @@
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       class="q-pa-md"
-      :class="!productStore.showProductForm ? 'q-mt-md' : ''"
-      :style="
-        !productStore.showProductForm
-          ? 'height: 81vh; max-width: 100%'
-          : 'height: 41vh; max-width: 100%'
-      "
+      :class="!productStore.showProductForm ? 'q-mt-md' : 'q-mt-sm'"
+      :style="currentProductsComponentSizes"
     >
       <q-list
         v-show="
@@ -81,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useProductStore } from "src/stores/productStore";
 import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useQuasar } from "quasar";
@@ -178,6 +174,17 @@ const deleteProduct = (id) => {
   });
 };
 
+const currentProductsComponentSizes = computed(() => {
+  if (productStore.showProductForm && $q.screen.height > 799) {
+    return "height: 48vh; max-width: 100%";
+  } else if (productStore.showProductForm && $q.screen.height < 800) {
+    return "height: 30vh; max-width: 100%";
+  } else if (!productStore.showProductForm && $q.screen.height < 800) {
+    return "height: 75vh; max-width: 100%";
+  } else {
+    return "height: 81vh; max-width: 100%";
+  }
+});
 </script>
 
 <style lang="scss">

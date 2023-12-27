@@ -4,7 +4,7 @@
     transition-show="scale"
     transition-hide="scale"
   >
-    <q-card class="bg-white q-pa-sm">
+    <q-card class="bg-white q-pa-xs">
       <q-card-section class="text-center">
         <span class="text-h6"
           >In this window you can search for a product from the product
@@ -12,7 +12,7 @@
         >
       </q-card-section>
 
-      <q-card-section class="row q-gutter-md items-center justify-between">
+      <q-card-section class="row items-center justify-between">
         <q-input
           @keyup.enter="searchProductFromProductDatabase"
           rounded
@@ -21,8 +21,7 @@
           v-model="searchProductContent"
           hint="You can search for many products at the same time, e.g. write banana, apple, orange"
           placeholder="Eg. apple"
-          class="q-mt-md"
-          style="width: 75%"
+          class="q-mt-xs col-8"
         >
           <template v-if="!searchProductContent" v-slot:append>
             <q-icon name="search" />
@@ -44,7 +43,7 @@
           rounded
           no-caps
           label="Search"
-          class="text-primary bg-blue-1 q-mb-lg"
+          class="text-primary bg-blue-1 q-mb-md col-3"
         />
       </q-card-section>
 
@@ -56,7 +55,7 @@
         <q-scroll-area
           :thumb-style="thumbStyle"
           :bar-style="barStyle"
-          style="height: 50vh; max-width: 100%"
+          style="height: 40vh; max-width: 100%"
         >
           <q-list class="column col" v-show="productDatabaseItems.length">
             <q-item
@@ -99,7 +98,7 @@
           v-close-popup
           no-caps
           label="Close"
-        class="text-white bg-red-5"
+          class="text-white bg-red-5"
         />
       </q-card-actions>
     </q-card>
@@ -194,16 +193,14 @@
             flat
             no-caps
             label="Add Product"
-           class="text-white bg-primary"
-          
+            class="text-white bg-primary"
           />
           <q-btn
             flat
             v-close-popup
             no-caps
             label="Close"
-          class="text-white bg-red-5"
-           
+            class="text-white bg-red-5"
           />
         </q-card-actions>
       </q-card>

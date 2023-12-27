@@ -18,7 +18,9 @@
             <q-item
               clickable
               v-close-popup
-              @click="productStore.showProductForm = !productStore.showProductForm"
+              @click="
+                productStore.showProductForm = !productStore.showProductForm
+              "
             >
               <q-item-section>
                 <q-item-label>Add a New Product</q-item-label>
@@ -159,21 +161,21 @@
         userDetails.macronutrients
       "
       bordered
-      class="q-py-xs bg-primary text-white text-center row"
+      class="q-pa-xs bg-primary text-white text-center row"
     >
-      <span class="text-h6 col-6"
+      <span class="text-body1 text-bold col-6"
         >Kcal: {{ macronutrients.calories || 0 }} /
         {{ userDetails.macronutrients.calories }}
       </span>
-      <span class="text-h6 col-6"
+      <span class="text-body1 text-bold col-6"
         >P: {{ macronutrients.proteins || 0 }}g /
         {{ userDetails.macronutrients.proteins }} g
       </span>
-      <span class="text-h6 col-6">
+      <span class="text-body1 text-bold col-6">
         C: {{ macronutrients.carbohydrates || 0 }}g /
         {{ userDetails.macronutrients.carbohydrates }} g
       </span>
-      <span class="text-h6 col-6">
+      <span class="text-body1 text-bold col-6">
         F: {{ macronutrients.fats || 0 }}g /
         {{ userDetails.macronutrients.fats }} g</span
       >
