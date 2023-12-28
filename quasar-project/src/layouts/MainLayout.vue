@@ -201,18 +201,15 @@ const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 const usersStore = useUsersStore();
 
-// Holds the macronutrients data obtained from the store
 const macronutrients = ref({});
 currentDayStore.$subscribe((mutation, state) => {
   macronutrients.value = currentDayStore.macronutrients;
 });
 
-// Holds information about the logged in user
 const userDetails = computed(() => {
   return usersStore.userDetails;
 });
 
-// Shows the username if the user is logged in, or JustEat if the user is logged out
 const pageTitle = computed(() => {
   if (userDetails.value && userDetails.value.id) {
     return userDetails.value.userName;
@@ -221,10 +218,9 @@ const pageTitle = computed(() => {
   }
 });
 
-// Clears the search bar if the user clicks the Clear button next to the search bar,
-// or searches for a product that the user wants to find
 const searchProductContent = ref("");
 const inputSearch = ref("");
+
 const searchProduct = (e) => {
   if (e.type == "click") {
     searchProductContent.value = "";
@@ -233,7 +229,7 @@ const searchProduct = (e) => {
   productStore.searchProductContent = searchProductContent.value;
 };
 
-// Displays the user's history from the beginning
+// Display the user's history from the beginning
 const checkHistory = () => {
   currentDayStore.showHistoryTotal = true;
   currentDayStore.firebaseCheckHistoryTotal();
@@ -247,7 +243,7 @@ watch(route, (newVal) => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header-search {
   position: absolute;
   right: 0;

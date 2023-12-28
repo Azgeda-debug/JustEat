@@ -164,8 +164,10 @@ const otherInstructions = ref([
     description: " Click on a product to view details on mobile devices.",
   },
 ]);
+
 const tab = ref("about");
 
+// Set sizes for the about component based on the user's device
 const aboutScrollBarSizes = computed(() => {
   if ($q.screen.height > 799) {
     return "height: 85vh; width: 100%";
@@ -175,7 +177,7 @@ const aboutScrollBarSizes = computed(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .q-expansion-item {
   .q-expansion-item__container {
     .q-item {

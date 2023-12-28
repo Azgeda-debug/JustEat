@@ -73,7 +73,7 @@ const newProduct = ref({
   carbohydrates: null,
 });
 
-// Adding a new product to the database
+// Add a new product to the database
 const addNewProduct = () => {
   productStore.firebaseAddNewProduct(newProduct.value);
   newProduct.value = {

@@ -31,7 +31,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         return format(d, "dd-MM-yyyy");
     }
 
-    const addProductToFirebase = (payLoad, quantity) => {
+    const firebaseAddProduct = (payLoad, quantity) => {
         if (payLoad && quantity) {
             const day = getDay()
             const userId = getUserId()
@@ -182,7 +182,7 @@ export const useCurrentDayStore = defineStore('currentDayStore', () => {
         showHistoryTotal,
         showAddMacronutrientsForm,
         loadingHistoryTotal,
-        addProductToFirebase,
+        firebaseAddProduct,
         resetDay,
         firebaseCheckHistoryTotal,
         firebaseGetProducts,

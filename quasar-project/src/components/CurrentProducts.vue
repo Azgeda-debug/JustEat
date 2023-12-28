@@ -83,7 +83,7 @@ import { useCurrentDayStore } from "src/stores/currentDayStore";
 import { useQuasar } from "quasar";
 import { customScrollBar } from "src/composables/ScrollBar.js";
 
-// Scroll Bar Styles
+// Scroll bar styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const $q = useQuasar();
@@ -91,9 +91,9 @@ const $q = useQuasar();
 const productStore = useProductStore();
 const currentDayStore = useCurrentDayStore();
 
-// Holds the product data obtained from the store
 const products = ref({});
 const searchProductContent = ref("");
+
 productStore.$subscribe((mutation, state) => {
   products.value = productStore.products;
   searchProductContent.value = productStore.searchProductContent;
@@ -120,8 +120,9 @@ watch(searchProductContent, (newVal) => {
 const showProduct = (product) => {
   $q.dialog({
     dark: true,
-    title: `${product.name}`,
-    message: `Kcal: ${product.calories}, Proteins: ${product.proteins}, Carbohydrates: ${product.carbohydrates}, Fats: ${product.fats}`,
+    title: `<span class="flex justify-center">${product.name}</span>`,
+    message: `<span class="flex">Kcal: ${product.calories}, Proteins: ${product.proteins}g, Carbohydrates: ${product.carbohydrates}g, Fats: ${product.fats}g</span>`,
+    html: true,
     ok: {
       push: true,
       color: "primary",
@@ -149,7 +150,7 @@ const addProduct = (id) => {
     },
     persistent: false,
   }).onOk((quantity) => {
-    currentDayStore.addProductToFirebase(products.value[id], quantity);
+    currentDayStore.firebaseAddProduct(products.value[id], quantity);
   });
 };
 
@@ -174,11 +175,14 @@ const deleteProduct = (id) => {
   });
 };
 
+// Set sizes for the current products component based on the user's device
 const currentProductsComponentSizes = computed(() => {
   if (productStore.showProductForm && $q.screen.height > 799) {
     return "height: 48vh; max-width: 100%";
-  } else if (productStore.showProductForm && $q.screen.height < 800) {
+  } else if (productStore.showProductForm && $q.screen.height < 800 && $q.screen.height > 649) {
     return "height: 30vh; max-width: 100%";
+  } else if (productStore.showProductForm && $q.screen.height < 650) {
+    return "height: 25vh; max-width: 100%";
   } else if (!productStore.showProductForm && $q.screen.height < 800) {
     return "height: 75vh; max-width: 100%";
   } else {
@@ -187,7 +191,7 @@ const currentProductsComponentSizes = computed(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .q-item__section--main {
   flex: none;
 }

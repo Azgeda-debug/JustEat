@@ -209,12 +209,13 @@
 </template>
 
 <script setup>
-import { onUnmounted, ref } from "vue";
+import { ref } from "vue";
 import { useProductStore } from "stores/productStore.js";
 import axios from "axios";
 import { customScrollBar } from "src/composables/ScrollBar.js";
 import { useQuasar } from "quasar";
 
+// Scroll bar styles
 const { thumbStyle, barStyle } = customScrollBar().useCustomScrollBar();
 
 const $q = useQuasar();
@@ -225,17 +226,18 @@ const searchProductContent = ref("");
 const productDatabaseItems = ref([]);
 const loadingProducts = ref(false);
 
+// Use the Nutrition Ninjas API to retrieve macronutrients information for the product
 const searchProductFromProductDatabase = async () => {
   loadingProducts.value = true;
   const apiKey = "Iwe6s0snYLMbLTASHAxxzg==sKHY56WZfB89IZsK";
 
-  const options = {
+  const requestOptions = {
     method: "GET",
     url: `https://api.api-ninjas.com/v1/nutrition?query=${searchProductContent.value}`,
     headers: { "X-Api-Key": apiKey },
   };
 
-  await axios.request(options).then((response) => {
+  await axios.request(requestOptions).then((response) => {
     productDatabaseItems.value = response.data;
     loadingProducts.value = false;
   });
@@ -248,6 +250,7 @@ const getMoreInformationAboutProduct = (item) => {
   showSelectedProduct.value = true;
 };
 
+// Check if the product is already added, if not, add it to the database 
 const addProductToFirebase = () => {
   let checkProduct = 1;
 
@@ -282,8 +285,4 @@ const addProductToFirebase = () => {
     });
   }
 };
-
-onUnmounted(() => {
-  productDatabaseItems.value = [];
-});
 </script>

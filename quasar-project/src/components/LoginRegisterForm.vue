@@ -91,6 +91,3 @@ const submitForm = () => {
   }
 };
 </script>
-
-<style>
-</style>
