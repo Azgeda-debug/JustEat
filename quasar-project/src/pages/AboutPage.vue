@@ -32,7 +32,7 @@
                   expand-separator
                   :label="item.title"
                   header-class="text-bold"
-                  expand-icon-class="full-width"
+                  
                 >
                   <q-card>
                     <q-card-section class="text-justify">
@@ -176,15 +176,3 @@ const aboutScrollBarSizes = computed(() => {
   }
 });
 </script>
-
-<style lang="scss" scoped>
-.q-expansion-item {
-  .q-expansion-item__container {
-    .q-item {
-      div.q-item__section--main {
-        max-width: 75%;
-      }
-    }
-  }
-}
-</style>
